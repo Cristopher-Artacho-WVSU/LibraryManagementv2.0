@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <!-- THE CSS FILE -->
+    <!-- <link rel="stylesheet" href="/login_style.css"> -->
+</head>
+<body>
+    <!-- DIVISION INTENDED FOR THE FORM -->
+    <div id="logInDiv">
+        <!-- LOGIN FORM TAG -->
+        <h1 id="logInFormTag">Log In</h1>
+        <!-- LOG IN FORM -->
+        <form id="logInForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Username" required> <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password" required><br>
+            <button type="submit">Log In</button>
+        </form>
+    </div>
+
+    <script>
+    document.getElementById('logInForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent the form from submitting traditionally
+
+        const loginUsername = document.getElementById('username').value;
+        const loginPassword = document.getElementById('password').value;
+
+
+            const response = await fetch(`/database/accounts?username=${loginUsername}`, {
+                method: 'GET'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data. Server returned ' + response.status);
+            }
+
+            const userData = await response.json();
+            const userFound = userData.find(user => user.username === loginUsername && user.password === loginPassword);
+            
+            if (userFound) {
+                const {
+                    account_id,
+                    username,
+                    password,
+                    last_name,
+                    given_name,
+                    email_address,
+                    contact_number,
+                    profile_picture,
+                    address,
+                    account_type
+                } = userFound;
+                localStorage.setItem("accountId", account_id);
+                localStorage.setItem("username", username);
+                localStorage.setItem("password", password);
+                localStorage.setItem("lastName", last_name);
+                localStorage.setItem("givenName", given_name);
+                localStorage.setItem("emailAddress", email_address);
+                localStorage.setItem("contactNumber", contact_number);
+                localStorage.setItem("profilePicture", profile_picture);
+                localStorage.setItem("address", address);
+                localStorage.setItem("accountType", account_type);
+
+                window.location.href = '/library-management-system/dashboard';
+            } else {
+                alert('Invalid username or password. Please try again.');
+            }
+
+    });
+    </script>
+</body>
+</html>
