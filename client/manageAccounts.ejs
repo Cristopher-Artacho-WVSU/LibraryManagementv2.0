@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/signup_style.css">
+    <style>
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0px;
+            left: -250px;
+            padding-top: 35px;
+            background-color: #bebdbd;
+            transition: left 0.3s ease;
+            z-index: 3;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            padding: 20px;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            cursor: pointer;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #797979;
+            transition: 1s;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            left: 15px;
+            top: 15px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .menu-toggle i {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .sub-menu {
+            display: none;
+        }
+
+        .sub-menu.active {
+            display: block;
+        }
+
+        .sub-menu a {
+            display: block;
+            padding: 10px;
+            padding-right: 15px;
+            margin-top: 10px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Additional Styles */
+        .sidebar-content {
+            padding: 20px;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .sidebar-content:hover {
+            background-color: #797979;
+            transition: 1s;
+        }
+        
+        /* Remove bullet points and link highlights */
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            outline: none; /* Remove link outline */
+        }
+
+        .sidebar ul li a:hover {
+            color:#a09e9e;
+            transition: 1s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="blurBackground" class="hideContent"></div>
+
+    <!-- THE DIV ITSELF FOR THE SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+            
+        <li onmouseenter="toggleSubMenu()" onmouseleave="hideSubMenu()" id="subMenuIndicator">
+            <!-- IF THE MOUSE ENTERS THE RANGE OF THE LINE ABOVE, IT WILL TRIGGER THE SUBMENU -->
+            <div class="subMenu" id="subMenuDiv"></div>
+        </li>   
+    </div>
+    <!-- CLICK THIS TO TOGGLE THE SIDEBAR -->
+    <div class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars thin-menu-icon"></i>
+    </div>
+
+
+    <button id="addAccountButton">Add Account</button>
+    <button id="editAccount">Edit Account</button>
+    <button id="deleteAccount">Delete Account</button>
+
+
+    <!-- FORM FOR SIGN UP -->
+    <div id="signUpDiv" class="hideContent">
+        <h1 id="signUpFormTag">Sign Up</h1>
+        <form id="signUpForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Example: johndoe"> <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password"><br>
+            <label for="verify_password">Verify Password:</label>
+            <input type="password" id="verify_password" name="verify_password" placeholder="Re-type the password again"><br>
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="lastName" placeholder="Example: Doe"><br>
+            <label for="given_name">Given Name:</label>
+            <input type="text" id="given_name" name="givenName" placeholder="Example: John"><br>
+            <label for="email_address">Email:</label>
+            <input type="text" id="email_address" name="emailAddress" placeholder="Email-Address"><br>
+            <label for="contact_number">Contact Number:</label>
+            <input type="text" id="contact_number" name="contactNumber" placeholder="Use 0 prefix contact numbers. Example: 09345678910"><br>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" placeholder="Example: Poblacion, Zarraga, Iloilo"><br>
+            <label for="account_type">Account Type:</label><br>
+            <input type="text" id="account_type" name="accountType" placeholder="Choose Account Type" readonly onclick="toggleAccountTypeContent()">
+            <div id="accountType_values">
+                <p onclick="setAccountType('User')">User</p>
+                <p onclick="setAccountType('Librarian')">Librarian</p>
+            </div>
+            <label for="profile_picture">User Profile Picture:</label><br>
+            <input type="file" id="profile_picture" name="profilePicture" accept="image/*" single>
+            <button type="submit">Sign Up Account</button>
+            <button type="button" id="cancelForm">Cancel</button>
+        </form>
+    </div>
+
+
+
+
+    <!-- FORM FOR EDIT ACCOUNT -->
+    <!-- <div id="editAccountDiv" >
+        <h1 id="editFormTag">Edit Account</h1>
+        <label for="account_id">Account ID:</label>
+        <input type="text" id="account_id" name="account_id" placeholder="Enter the Account ID you wish to edit"> <br>
+        <button type="button" onclick="extractAccountID()">Submit</button> <br>
+
+
+        <form id="editAccountForm">          
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Example: johndoe"> <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password"><br>
+            <label for="verify_password">Verify Password:</label>
+            <input type="password" id="verify_password" name="verify_password" placeholder="Re-type the password again"><br>
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="lastName" placeholder="Example: Doe"><br>
+            <label for="given_name">Given Name:</label>
+            <input type="text" id="given_name" name="givenName" placeholder="Example: John"><br>
+            <label for="email_address">Email:</label>
+            <input type="text" id="email_address" name="emailAddress" placeholder="Email-Address"><br>
+            <label for="contact_number">Contact Number:</label>
+            <input type="text" id="contact_number" name="contactNumber" placeholder="Use 0 prefix contact numbers. Example: 09345678910"><br>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" placeholder="Example: Poblacion, Zarraga, Iloilo"><br>
+            <label for="account_type">Account Type:</label><br>
+            <input type="text" id="account_type" name="accountType" placeholder="Choose Account Type" readonly onclick="toggleAccountTypeContent()">
+            <div id="accountType_values">
+                <p onclick="setAccountType('User')">User</p>
+                <p onclick="setAccountType('Librarian')">Librarian</p>
+            </div>
+            <label for="profile_picture">User Profile Picture:</label><br>
+            <input type="file" id="profile_picture" name="profilePicture" accept="image/*" single>
+            <button type="submit">Finish Editing</button>
+            <button type="button" id="cancelForm">Cancel</button>
+        </form>
+    </div> -->
+
+    <table>
+        <thead>
+            <th>Account ID</th>
+            <th>Account Username</th>
+            <th>Email Address</th>
+            <th>Contact Number</th>
+            <th>Account Type</th>
+        </thead>
+        <tbody id="accountTableData"></tbody>
+    </table>
+
+<script src="/manageAccounts_script.js">
+
+// FUNCTION FOR EXTRACTING THE USER ID
+// async function extractAccountID(){
+//     var accountID = document.getElementById("account_id").value;
+    
+//     const response = await fetch('/database/accounts', {
+//         method: 'GET'
+//     });
+//     if (!response.ok) {
+//         throw new Error('Cannot connect to participants collection. Server returned ' + response.status);
+//     }
+//     const accountData = await response.json();
+//     const findAccountID = accountData.find(users => users.account_id === accountID);
+
+//     if (findAccountID){
+//         console.log('User ID found')
+//         .then(accountValues => {
+//             accountValues.forEach(field => {
+//                 passEditValues(
+//                     field.account_id,
+//                     field.username,
+//                     field.password,
+//                     field.last_name,
+//                     field.given_name,
+//                     field.email_address,
+//                     field.contact_number,
+//                     field.profile_picture,
+//                     field.city,
+//                     field.province,
+//                     field.barangay,
+//                     field.account_type
+//                 )
+//             })
+//         })
+        
+//     }
+// }
+
+// function passEditValues(account_id, username, password, last_name, given_name, email_address, contact_number, profile_picture, city, province, barangay, account_type) {
+//             // Assuming you have form fields to populate with user data
+//             console.log(account_id, username, password, last_name, given_name, email_address, contact_number, profile_picture, city, province, barangay, account_type); // For debugging purposes
+
+//             document.getElementById("account_id").value = account_id;
+//             document.getElementById("username").value = username;
+//             document.getElementById("password").value = password;
+//             document.getElementById("last_name").value = last_name;
+//             document.getElementById("given_name").value = given_name;
+//             document.getElementById("email_address").value = email_address;
+//             document.getElementById("contact_number").value = contact_number;
+//             document.getElementById("profile_picture").value = profile_picture;
+//             document.getElementById("city").value = city;
+//             document.getElementById("province").value = province;
+//             document.getElementById("barangay").value = barangay;
+//             document.getElementById("account_type").value = account_type;
+//         }
+
+
+
+
+</script>
+</body>
+</html>
