@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>History Requests</title>
+    <title>Pending Requests</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
+        .requestDiv{
+            background-color: #f2f2f2;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
         .sidebar {
             height: 100%;
             width: 250px;
@@ -105,6 +111,7 @@
     </style>
 </head>
 <body>
+
     <div class="sidebar" id="sidebar">
         
         <li onmouseenter="toggleSubMenu()" onmouseleave="hideSubMenu()" id="subMenuIndicator">
@@ -117,12 +124,304 @@
         <i class="fas fa-bars thin-menu-icon"></i>
     </div>
 
+    
     <div id="requestHistoryContainer">
-        
+
     </div>
 
+
     <script>
-// SCRIPT FOR SIDEBAR
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    var currentAccount_id = localStorage.getItem("accountId")
+    var accountType = localStorage.getItem("accountType")
+    console.log('Account Type from Local Storage:', accountType);
+    fetch('/database/requests')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Could not establish a connetion to the requests collection');
+            }
+            return response.json();
+        })
+        .then(PendingRequest => {
+            PendingRequest.forEach(field => {
+                if (field.request_status === "Pending") {
+                    return; // Skip requests that are not "Pending"
+                }
+                if (accountType === "User" && field.account_id !== currentAccount_id) {
+                    return;
+                }
+
+                showPendingRequests(
+                    field.request_id,
+                    field.book_id,
+                    field.account_id,
+                    field.borrow_date,
+                    field.return_date,
+                    field.request_type,
+                    field.request_status,
+                    field._id,
+                    field.handled_by,
+                    field.return_fine,
+                    accountType,
+                    
+                    currentAccount_id
+                );
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching requests:', error);
+            alert('Error fetching requests. Please try again');
+        });
+});
+async function showPendingRequests(request_id, book_id, account_id, borrow_date, return_date, request_type, request_status, _id, handled_by, fine_amount, account_type,currentAccountId) {
+    console.log('Account Type in showPendingRequests:', account_type);
+    
+    const requestContainer = document.getElementById("requestHistoryContainer");
+
+    const requestHistoryDiv = document.createElement('div');
+    requestHistoryDiv.classList.add('requestDiv');
+
+    const requestIDField = document.createElement('p'); 
+    requestIDField.textContent = 'Request ID: ' + request_id;
+    
+    const bookIDField = document.createElement('p');
+    const bookTitle = await getBookTitleById(book_id);
+    bookIDField.textContent = 'Book Title: ' + bookTitle;
+
+    const accountIDField = document.createElement('p');
+    const accountFullName = await getUsernameById(account_id);
+    accountIDField.textContent = 'Account Name: ' + accountFullName;
+
+    const borrowDateRequestField = document.createElement('p');
+    borrowDateRequestField.textContent = 'Borrow Date: ' + borrow_date;
+
+    const returnDateRequestField = document.createElement('p');
+    returnDateRequestField.textContent = 'Return Date: ' + return_date;
+
+    const requestTypeField = document.createElement('p');
+    requestTypeField.textContent = 'Request Type: ' + request_type;
+
+    const requestStatusField = document.createElement('p');
+    requestStatusField.textContent = 'Request Status: ' + request_status;
+
+    const librarianHandledRequest = document.createElement('p');
+    const handledByLibrarian = await getFullNameByHandleId(handled_by)
+    librarianHandledRequest.textContent = 'Handled by: ' + handledByLibrarian;
+    
+    requestHistoryDiv.appendChild(requestIDField);
+    requestHistoryDiv.appendChild(bookIDField);
+    requestHistoryDiv.appendChild(accountIDField);
+    requestHistoryDiv.appendChild(borrowDateRequestField);
+    requestHistoryDiv.appendChild(returnDateRequestField);
+    requestHistoryDiv.appendChild(requestTypeField);
+    requestHistoryDiv.appendChild(requestStatusField);
+    requestHistoryDiv.appendChild(librarianHandledRequest)
+
+    if(request_status === "Accepted" || request_status === "Returned"){
+        const fineAmount = document.createElement('p');
+        const getFineAmount = await compareCurrentAndReturnDay(return_date, fine_amount, request_status, _id)
+        fineAmount.textContent = 'Fine: ' + getFineAmount;
+        requestHistoryDiv.appendChild(fineAmount)
+    }
+
+    if (account_type === "Librarian" && request_status === "Accepted") {
+        const returnButton = document.createElement('button');
+        returnButton.id = "returnRequest";
+        returnButton.textContent = 'Return';
+        requestHistoryDiv.appendChild(returnButton);
+
+        returnButton.addEventListener('click', () => issueReturn(currentAccountId ,_id, requestStatusField));
+        // declineButton.addEventListener('click', () => handleDeclineRequest(requestStatusField, _id,currentAccountId));
+    }
+
+    requestContainer.appendChild(requestHistoryDiv);
+}
+
+
+function handleAcceptRequest(requestStatusField, objectId, currentAccountId) {
+    requestStatusField.textContent = 'Request Status: Accepted';
+
+    fetch(`/database/requests/${objectId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+                // UPDATES THE 'request_status' ONLY TO 'Accepted'
+        body: JSON.stringify({ request_status: 'Accepted', 
+        handled_by: `${currentAccountId}`  }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Request accepted:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+    window.location.href = "/library-management-system/pending-requests";
+}
+
+async function compareCurrentAndReturnDay(return_date, fine_amount, request_status, request_ObjId){
+    if (request_status === "Accepted") {
+        // Get the current date
+        const currentDate = new Date();
+
+        // Parse the return date from the returnDateField
+        const returnDate = new Date(return_date);
+
+        // Calculate the difference in milliseconds between the current date and the return date
+        const timeDiff = currentDate.getTime() - returnDate.getTime();
+        const daysPassed = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert milliseconds to days and round up
+
+        // Calculate the fine based on the number of days passed
+        const calculatedFine = daysPassed > 0 ? (daysPassed * 50) : 0;
+
+        // Check if fine needs to be updated
+        if (calculatedFine > fine_amount) {
+            // Update the 'fine' variable to the new calculated fine
+            fine_amount = calculatedFine;
+
+            try {
+                const response = await fetch(`/database/requests/${request_ObjId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ return_fine: fine_amount }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log('Request accepted:', data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    }
+
+    return fine_amount;
+}
+
+function issueReturn(currentAccount_id,request_ObjId, requestStatusField){
+    // CHANGES THE REQUEST STATUS INTO 'Returned'
+    requestStatusField.textContent = 'Request Status: Returned';
+
+    fetch(`/database/requests/${request_ObjId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+                // UPDATES THE 'request_status' ONLY TO 'Accepted'
+        body: JSON.stringify({ request_status: 'Returned', 
+        handled_by: `${currentAccount_id}`  }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Request accepted:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+    window.location.href = "/library-management-system/history-requests";
+}
+
+// function handleDeclineRequest(requestStatusField, objectId, currentAccountId) {
+//     requestStatusField.textContent = 'Request Status: Rejected';
+//     fetch(`/database/requests/${objectId}`, {
+//         method: 'PATCH',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         // UPDATES THE 'request_status' ONLY TO 'Rejected'
+//         body: JSON.stringify({ request_status: 'Rejected', handled_by: `${currentAccountId}` }),
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log('Request declined:', data);
+//     })
+//     .catch((error) => {
+//         console.error('Error:', error);
+//     });
+//     window.location.href = "/library-management-system/pending-requests";
+// }
+
+async function getUsernameById(account_id){
+    const response = await fetch(`/database/accounts?account_id=${account_id}`, {
+        method: 'GET'
+    });
+    if(!response.ok){
+        console.log('Could not establish a connection to the accounts', account_id);
+        return 'Could not fetch the Full Name';
+    }
+
+    const accountData = await response.json();
+
+    const fullName = accountData.find(accountparam => accountparam.account_id === account_id);
+    if (fullName){
+        const {
+            last_name,
+            given_name
+        } = fullName;
+        return given_name + " " + last_name;
+    }
+    else{
+        return 'Could not fetch the Full Name';
+    }
+}
+
+async function getBookTitleById(book_id){
+    const response = await fetch(`/database/books?book_id=${book_id}`, {
+        method: 'GET'
+    });
+    if(!response.ok){
+        console.log('Could not establish a connection to the accounts', book_id);
+        return 'Could not fetch the Full Name';
+    }
+
+    const bookData = await response.json();
+
+    const bookTitle = bookData.find(accountparam => accountparam.book_id === book_id);
+    if (bookTitle){
+        const {
+            title
+        } = bookTitle;
+        return title;
+    }
+    else{
+        return 'Could not fetch the Full Name';
+    }
+}
+
+async function getFullNameByHandleId(librarian_id){
+    const response = await fetch(`/database/accounts?account_id=${librarian_id}`, {
+        method: 'GET'
+    });
+    if(!response.ok){
+        console.log('Could not establish a connection to the accounts', librarian_id);
+        return 'Could not fetch the Full Name';
+    }
+
+    const accountData = await response.json();
+
+    const fullName = accountData.find(accountparam => accountparam.account_id === librarian_id);
+    if (fullName){
+        const {
+            last_name,
+            given_name
+        } = fullName;
+        return given_name + " " + last_name;
+    }
+    else{
+        return 'Could not fetch the Full Name';
+    }
+}
+
+
+ // SCRIPT FOR SIDEBAR
  function toggleSidebar() {
         var sidebar = document.getElementById("sidebar");
         sidebar.classList.toggle('active');
@@ -199,57 +498,34 @@
     });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    var currentAccount_id = localStorage.getItem("accountId")
-    var accountType = localStorage.getItem("accountType")
-    console.log('Account Type from Local Storage:', accountType);
-    fetch('database/requests')
-        .then(response => {
-            if (!response.ok){
-                throw new Error('Could not establish a connetion to the requests collection');
-            }
-            return response.json();
-        })
-        .then(historyRequests => {
-            historyRequests.forEach(field => {
-                if (field.request_status == "Pending"){
-                    return;
-                }
-                if (accountType === "User" && field.account_id !== currentAccount_id) {
-                    return;
-                }
-                showRequestHistory(
-                    field.request_id,
-                    field.book_id,
-                    field.account_id,
-                    field.borrow_date,
-                    field.return_date,
-                    field.request_type,
-                    field.request_status,
-                    accountType,
-                    field._id,
-                    currentAccount_id  
-                );
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching requests:', error);
-            alert('Error fetching requests. Please try again');
-        });
-});
-    
-function showRequestHistory(request_id, book_id, account_id, borrow_date, return_date, request_type, request_status, account_type, _id, currentAccountId){
-console.log('Account Type:', account_type)
-
-const requestContainer = document.getElementById("requestHistoryContainer");
-
-    
 
 
-}
-    
-    
-    
+
+
+
+
+
+
+    // function updateFine(return_date, fine) {
+    // // Get the current date
+    // const currentDate = new Date();
+
+    // // Parse the return date from the returnDateField
+    // const returnDate = new Date(return_date);
+
+    // // Calculate the difference in milliseconds between the current date and the return date
+    // const timeDiff = currentDate.getTime() - returnDate.getTime();
+    // const daysPassed = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert milliseconds to days and round up
+
+    // // Calculate the fine based on the number of days passed
+    // const calculatedFine = daysPassed > 0 ? (daysPassed * 50) : 0;
+
+    // // Update the 'fine' variable by adding the calculated fine
+    // fine += calculatedFine;
+
+    // return fine;
+// }
+
     </script>
 </body>
 </html>
