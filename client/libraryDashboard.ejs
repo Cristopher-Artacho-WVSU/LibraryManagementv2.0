@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        
+/* SIDEBAR */
+ /* Original Sidebar CSS */
+        /* Original Sidebar CSS */
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0px;
+            left: -250px;
+            padding-top: 35px;
+            background-color: #bebdbd;
+            transition: left 0.3s ease;
+            z-index: 3;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            padding: 20px;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            cursor: pointer;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #797979;
+            transition: 1s;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            left: 15px;
+            top: 15px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .menu-toggle i {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .sub-menu {
+            display: none;
+        }
+
+        .sub-menu.active {
+            display: block;
+        }
+
+        .sub-menu a {
+            display: block;
+            padding: 10px;
+            padding-right: 15px;
+            margin-top: 10px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Additional Styles */
+        .sidebar-content {
+            padding: 20px;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .sidebar-content:hover {
+            background-color: #797979;
+            transition: 1s;
+        }
+        
+        /* Remove bullet points and link highlights */
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            outline: none; /* Remove link outline */
+        }
+
+        .sidebar ul li a:hover {
+            color:#a09e9e;
+            transition: 1s;
+        }
+    </style>
+</head>
+<body>
+    <!-- THE DIV ITSELF FOR THE SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        
+        <li onmouseenter="toggleSubMenu()" onmouseleave="hideSubMenu()" id="subMenuIndicator">
+            <!-- IF THE MOUSE ENTERS THE RANGE OF THE LINE ABOVE, IT WILL TRIGGER THE SUBMENU -->
+            <div class="subMenu" id="subMenuDiv"></div>
+        </li>   
+    </div>
+    <!-- CLICK THIS TO TOGGLE THE SIDEBAR -->
+    <div class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars thin-menu-icon"></i>
+    </div>
+
+    <script>
+    // SCRIPT FOR SIDEBAR
+    function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle('active');
+    }
+    // SCRIPT FOR THE SUBMENU SIDEBAR
+    function toggleSubMenu() {
+        var subMenu = document.getElementById("subMenuDiv");
+        subMenu.classList.toggle('active');
+    }
+    // FUNCTION FOR HIDING THE SUBMENU
+    function hideSubMenu() {
+    var subMenu = document.getElementById("subMenuDiv");
+    subMenu.classList.remove('active'); 
+    subMenu.classList.add('inactive')
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const accountPermissions = localStorage.getItem("accountType");
+
+    const sidebar = document.getElementById('sidebar');
+    const subMenuDiv = document.getElementById('subMenuDiv');
+
+    const userLinks = [
+        { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
+        { text: 'Profile', href: '/library-management-system/profile' },
+        { text: 'Dashboard', href: '/library-management-system/dashboard' },
+        { text: 'Book Inventory', href: '/library-management-system/book-inventory' },
+    ];
+
+    const userSubMenuLinks = [
+        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
+        { text: 'History Requests', href: '/library-management-system/history-requests' },
+    ];
+
+    const librarianLinks = [
+        { text: 'Manage Accounts', href: '/library-management-system/manage-accounts' },
+        { text: 'Manage Books', href: '/library-management-system/manage-books' },
+        { text: 'Dashboard', href: '/library-management-system/dashboard' },
+        { text: 'Profile', href: '/library-management-system/profile' },
+    ];
+
+    const librarianSubMenuLinks = [
+        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
+        { text: 'History Requests', href: '/library-management-system/history-requests' },
+    ];
+
+    let linksToAdd = [];
+    let subMenuLinksToAdd = [];
+
+    if (accountPermissions === 'User') {
+        linksToAdd = userLinks;
+        subMenuLinksToAdd = userSubMenuLinks;
+    } else if (accountPermissions === 'Librarian') {
+        linksToAdd = librarianLinks;
+        subMenuLinksToAdd = librarianSubMenuLinks;
+    }
+
+    linksToAdd.forEach(link => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.text;
+        div.appendChild(a);
+        sidebar.appendChild(div);
+    });
+
+    subMenuLinksToAdd.forEach(link => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.text;
+        div.appendChild(a);
+        subMenuDiv.appendChild(div);
+    });
+});
+
+
+    </script>
+</body>
+</html>

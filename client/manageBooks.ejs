@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Book!</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/librarianbookmanagement_style.css">
+    <style>
+            .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0px;
+            left: -250px;
+            padding-top: 35px;
+            background-color: #bebdbd;
+            transition: left 0.3s ease;
+            z-index: 3;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            padding: 20px;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            cursor: pointer;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #797979;
+            transition: 1s;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            left: 15px;
+            top: 15px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .menu-toggle i {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .sub-menu {
+            display: none;
+        }
+
+        .sub-menu.active {
+            display: block;
+        }
+
+        .sub-menu a {
+            display: block;
+            padding: 10px;
+            padding-right: 15px;
+            margin-top: 10px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Additional Styles */
+        .sidebar-content {
+            padding: 20px;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .sidebar-content:hover {
+            background-color: #797979;
+            transition: 1s;
+        }
+        
+        /* Remove bullet points and link highlights */
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            outline: none; /* Remove link outline */
+        }
+
+        .sidebar ul li a:hover {
+            color:#a09e9e;
+            transition: 1s;
+        }
+    </style>
+</head>
+<body>
+    <div id="blurBackground" class="hideContent"></div>
+    <!-- <div class="sidebar" id="sidebar">
+        <ul>
+          <li><a href="/librarians/dashboard">Dashboard</a></li>
+          <li><a href="#">Profile</a></li>
+          <li onmouseenter="toggleSubMenu()" onmouseleave="hideSubMenu()">
+            <a>Books</a>
+            <div class="sub-menu" id="librarianSubMenu">
+                <a href="/login/librarian/dashboard/add_book">Add Books</a>
+                <a href="">Edit Books</a>
+                <a href="">Delete Books</a>
+            </div>
+          </li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div> -->
+<!--     
+      <div class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars thin-menu-icon"></i>
+      </div> -->
+<!-- THE DIV ITSELF FOR THE SIDEBAR -->
+<div class="sidebar" id="sidebar">
+        
+    <li onmouseenter="toggleSubMenu()" onmouseleave="hideSubMenu()" id="subMenuIndicator">
+        <!-- IF THE MOUSE ENTERS THE RANGE OF THE LINE ABOVE, IT WILL TRIGGER THE SUBMENU -->
+        <div class="subMenu" id="subMenuDiv"></div>
+    </li>   
+</div>
+<!-- CLICK THIS TO TOGGLE THE SIDEBAR -->
+<div class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars thin-menu-icon"></i>
+</div>
+
+
+    <div id="navbar">
+        <!-- <p>Add Books</p> 
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p id="username"></p>&nbsp;&nbsp;
+        <img id="profile_picture">&nbsp;&nbsp;&nbsp;&nbsp;
+         <p><a href="">Log Out</a></p> -->
+    </div>
+    
+    <button id="addBookButton">Add Book</button>
+<div id="addBookDiv" class="hideContent">
+    <h1 id="AddBookTag">Add Book</h1>
+    <form id="addBookForm">
+
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title"><br><br>
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author"><br><br>
+
+        <label for="date">Date:</label>
+        <input type="text" id="date" name="date"><br><br>
+
+        <label for="genre">Genre:</label>
+        <input type="text" id="genre" name="genre"><br><br>
+
+        <label for="copies">Copies Owned:</label>
+        <input type="text" id="copies" name="copies"><br><br>
+
+        <label for="fileInput">Book Photo:</label>
+        <div id="image_container">
+            <img src="" alt="Book Image" id="picture" width="300" height="500">
+        </div>
+        <input type="file" id="fileInput" name="image" accept="image/*" single>
+
+
+        <button type="submit">Confirm</button>
+        <button type="button" id="cancelButton">Cancel</button>
+    </form>
+</div>
+
+<table>
+    <thead>
+        <th>Book ID</th>
+        <th>Book Title</th>
+        <th>Total Copies</th>
+        <th>Copies Available</th>
+        <th>Copies Borrowed</th>
+    </thead>
+    <tbody id="bookTableData"></tbody>
+</table>
+    <script>
+
+    // MAKING THE addBookForm VISIBLE
+    document.getElementById('addBookButton').addEventListener('click', function(){
+        document.getElementById('blurBackground').classList.remove('hideContent');
+        document.getElementById('addBookDiv').classList.remove('hideContent');
+        setTimeout(() => {
+            document.getElementById('blurBackground').classList.add('showContent');
+            document.getElementById('addBookDiv').classList.add('showContent');
+        }, 10)
+    });
+    // MAKING THE addBookForm INVISIBLE
+    document.getElementById('cancelButton').addEventListener('click', function() {
+        document.getElementById('blurBackground').classList.remove('showContent');
+        document.getElementById('addBookDiv').classList.remove('showContent');
+        setTimeout(() => {
+            document.getElementById('blurBackground').classList.add('hideContent');
+        document.getElementById('addBookDiv').classList.add('hideContent');
+        }, 300)
+    });
+
+    //IF THERE IS A CHANGE IN THE VALUE OF FILEINPUT, IMAGERELOAD() IS TRIGGERED
+    window.onload = function() {
+        document.getElementById('fileInput').addEventListener('change', imageReload);
+    }
+    //FUNCTION FOR READING THE BOOK PATH
+    function imageReload(){
+        const image = document.getElementById('fileInput').files[0]; //GETS THE VALUE AS AN OBJECT
+        const reader = new FileReader();  //RETURNS A FILEREADER OBJECT
+        reader.onload = function () {
+            picture = reader.result; //FILE CONTENTS
+        }
+        reader.readAsDataURL(image); //RETURNS THE FILE DATA
+    }
+//         // SCRIPT FOR SIDEBAR
+//     function toggleSidebar() {
+//       var sidebar = document.getElementById("sidebar");
+//       sidebar.classList.toggle('active');
+//     }
+
+//     function toggleSubMenu() {
+//       var subMenu = document.getElementById("librarianSubMenu");
+//       subMenu.classList.toggle('active');
+//     }
+
+//     function hideSubMenu() {
+//     var subMenu = document.getElementById("librarianSubMenu");
+//     subMenu.classList.remove('active'); // Add inactive class to hide submenu
+//     subMenu.classList.add('inactive')
+// }
+    function generateBookID() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const length = 6;
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters.charAt(randomIndex);
+        }
+        return result;
+    }
+        document.getElementById('addBookForm').addEventListener('submit', addBook) 
+function addBook() {
+    // event.preventDefault();
+            //TAKES IN ALL THESE ARGUMENTS
+            const book_id = generateBookID();
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const date = document.getElementById('date').value;
+            const copies = parseInt(document.getElementById('copies').value); 
+            const genre = document.getElementById('genre').value.split(',').map(item => item.trim());
+            const image = document.getElementById('fileInput').files[0];
+            const copies_available =  parseInt(document.getElementById('copies').value); 
+            const copies_borrowed = 0;
+            const reader = new FileReader();
+            console.log(image)
+            reader.readAsDataURL(image);
+            reader.onload = function () {
+                const picture = reader.result;
+            }
+            
+
+            //CREATES THE JSON FILE
+            const book = {book_id, title, author, date, copies, genre, picture, copies_available, copies_borrowed};
+            
+
+            
+            fetch('/database/books', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+                body: JSON.stringify(book)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add book. Server returned ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Book added successfully:', data);
+                alert('Book added successfully!');
+                window.href
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to add book. Please try again.');
+            });
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function(){
+    console.log('beginning adding the data to table')
+    fetch('/database/books')
+    .then(response => {
+        console.log('fetched successfully');
+        return response.json(); // Return the parsed JSON data
+    })
+    .then(data => {
+        data.forEach(field => {
+            createBookDataTable(
+                field.book_id,
+                field.title,
+                field.copies,
+                field.copies_available,
+                field.copies_borrowed
+            );
+            console.log('Passed through the createAccountDataTable function')
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching accounts:', error);
+        throw new Error('Error Fetching accounts');
+    });
+});
+function createBookDataTable(bookId, bookTitle, bookTotalCopies, bookCopiesAvailable, bookCopiesBorrowed){
+    const bookCellData = document.getElementById("bookTableData")
+    const tableRow = document.createElement("tr");
+
+    tableRow.innerHTML =`
+    <td>${bookId}</td>
+    <td>${bookTitle}</td>
+    <td>${bookTotalCopies}</td>
+    <td>${bookCopiesAvailable}</td>
+    <td>${bookCopiesBorrowed}</td>`;
+    
+    bookCellData.append(tableRow)
+}
+    // CREDENTIALS
+    // const username = sessionStorage.getItem("username");
+    // document.getElementById("username").textContent = username;
+    // const profile_picture = sessionStorage.getItem("profile_picture");
+    // document.getElementById("profile_picture").src = profile_picture;
+
+    // SCRIPT FOR SIDEBAR
+    function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle('active');
+    }
+    // SCRIPT FOR THE SUBMENU SIDEBAR
+    function toggleSubMenu() {
+        var subMenu = document.getElementById("subMenuDiv");
+        subMenu.classList.toggle('active');
+    }
+    // FUNCTION FOR HIDING THE SUBMENU
+    function hideSubMenu() {
+    var subMenu = document.getElementById("subMenuDiv");
+    subMenu.classList.remove('active'); 
+    subMenu.classList.add('inactive')
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const accountPermissions = localStorage.getItem("accountType");
+
+    const sidebar = document.getElementById('sidebar');
+    const subMenuDiv = document.getElementById('subMenuDiv');
+
+    const userLinks = [
+        { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
+        { text: 'Profile', href: '/library-management-system/profile' },
+        { text: 'Dashboard', href: '/library-management-system/dashboard' },
+        { text: 'Book Inventory', href: '/library-management-system/book-inventory' },
+    ];
+
+    const userSubMenuLinks = [
+        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
+        { text: 'History Requests', href: '/library-management-system/history-requests' },
+    ];
+
+    const librarianLinks = [
+        { text: 'Manage Accounts', href: '/library-management-system/manage-accounts' },
+        { text: 'Manage Books', href: '/library-management-system/manage-books' },
+        { text: 'Dashboard', href: '/library-management-system/dashboard' },
+        { text: 'Profile', href: '/library-management-system/profile' },
+    ];
+
+    const librarianSubMenuLinks = [
+        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
+        { text: 'History Requests', href: '/library-management-system/history-requests' },
+    ];
+
+    let linksToAdd = [];
+    let subMenuLinksToAdd = [];
+
+    if (accountPermissions === 'User') {
+        linksToAdd = userLinks;
+        subMenuLinksToAdd = userSubMenuLinks;
+    } else if (accountPermissions === 'Librarian') {
+        linksToAdd = librarianLinks;
+        subMenuLinksToAdd = librarianSubMenuLinks;
+    }
+
+    linksToAdd.forEach(link => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.text;
+        div.appendChild(a);
+        sidebar.appendChild(div);
+    });
+
+    subMenuLinksToAdd.forEach(link => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.text;
+        div.appendChild(a);
+        subMenuDiv.appendChild(div);
+    });
+});
+
+    </script>
+</body>
+</html>
