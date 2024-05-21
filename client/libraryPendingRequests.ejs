@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Requests</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        .requestDiv{
+            background-color: #f2f2f2;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0px;
+            left: -250px;
+            padding-top: 35px;
+            background-color: #bebdbd;
+            transition: left 0.3s ease;
+            z-index: 3;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            padding: 20px;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            cursor: pointer;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #797979;
+            transition: 1s;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            left: 15px;
+            top: 15px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .menu-toggle i {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .sub-menu {
+            display: none;
+        }
+
+        .sub-menu.active {
+            display: block;
+        }
+
+        .sub-menu a {
+            display: block;
+            padding: 10px;
+            padding-right: 15px;
+            margin-top: 10px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Additional Styles */
+        .sidebar-content {
+            padding: 20px;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .sidebar-content:hover {
+            background-color: #797979;
+            transition: 1s;
+        }
+        
+        /* Remove bullet points and link highlights */
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            outline: none; /* Remove link outline */
+        }
+
+        .sidebar ul li a:hover {
+            color:#a09e9e;
+            transition: 1s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        
+        <li onmouseenter="toggleSubMenu()" onmouseleave="hideSubMenu()" id="subMenuIndicator">
+            <!-- IF THE MOUSE ENTERS THE RANGE OF THE LINE ABOVE, IT WILL TRIGGER THE SUBMENU -->
+            <div class="subMenu" id="subMenuDiv"></div>
+        </li>   
+    </div>
+    <!-- CLICK THIS TO TOGGLE THE SIDEBAR -->
+    <div class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars thin-menu-icon"></i>
+    </div>
+
+    
+    <div id="pendingRequestsContainer">
+
+    </div>
+
+
+    <script>
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    var currentAccount_id = localStorage.getItem("accountId")
+    var accountType = localStorage.getItem("accountType")
+    console.log('Account Type from Local Storage:', accountType);
+    fetch('/database/requests')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Could not establish a connetion to the requests collection');
+            }
+            return response.json();
+        })
+        .then(PendingRequest => {
+            PendingRequest.forEach(field => {
+                if (field.request_status !== "Pending") {
+                    return; // Skip requests that are not "Pending"
+                }
+                if (accountType === "User" && field.account_id !== currentAccount_id) {
+                    return;
+                }
+
+                showPendingRequests(
+                    field.request_id,
+                    field.book_id,
+                    field.account_id,
+                    field.borrow_date,
+                    field.return_date,
+                    field.request_type,
+                    field.request_status,
+                    accountType,
+                    field._id,
+                    currentAccount_id
+                );
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching requests:', error);
+            alert('Error fetching requests. Please try again');
+        });
+});
+function showPendingRequests(request_id, book_id, account_id, borrow_date, return_date, request_type, request_status, account_type, _id, currentAccountId) {
+    console.log('Account Type in showPendingRequests:', account_type);
+    
+    const requestContainer = document.getElementById("pendingRequestsContainer");
+
+    const pendingRequestDiv = document.createElement('div');
+    pendingRequestDiv.classList.add('requestDiv');
+
+
+
+    const requestIDField = document.createElement('p'); 
+    requestIDField.textContent = 'Request ID: ' + request_id;
+    
+    const bookIDField = document.createElement('p');
+    bookIDField.textContent = 'Book ID: ' + book_id;
+
+    const accountIDField = document.createElement('p');
+    accountIDField.textContent = getUsernameById(account_id);
+    // accountIDField.textContent = 'Account ID: ' + account_id;
+
+    const borrowDateRequestField = document.createElement('p');
+    borrowDateRequestField.textContent = 'Borrow Date: ' + borrow_date;
+
+    const returnDateRequestField = document.createElement('p');
+    returnDateRequestField.textContent = 'Return Date: ' + return_date;
+
+    const requestTypeField = document.createElement('p');
+    requestTypeField.textContent = 'Request Type: ' + request_type;
+
+    const requestStatusField = document.createElement('p');
+    requestStatusField.textContent = 'Request Status: ' + request_status;
+
+    pendingRequestDiv.appendChild(requestIDField);
+    pendingRequestDiv.appendChild(bookIDField);
+    pendingRequestDiv.appendChild(accountIDField);
+    pendingRequestDiv.appendChild(borrowDateRequestField);
+    pendingRequestDiv.appendChild(returnDateRequestField);
+    pendingRequestDiv.appendChild(requestTypeField);
+    pendingRequestDiv.appendChild(requestStatusField);
+
+    if (account_type === "Librarian") {
+        const acceptButton = document.createElement('button');
+        acceptButton.id = "acceptRequest";
+        acceptButton.textContent = 'Accept';
+        pendingRequestDiv.appendChild(acceptButton);
+
+        const declineButton = document.createElement('button');
+        declineButton.id = "declineRequest";
+        declineButton.textContent = 'Decline';
+        pendingRequestDiv.appendChild(declineButton);
+
+        acceptButton.addEventListener('click', () => handleAcceptRequest(requestStatusField, _id, currentAccountId));
+        declineButton.addEventListener('click', () => handleDeclineRequest(requestStatusField, _id,currentAccountId));
+    }
+
+    requestContainer.appendChild(pendingRequestDiv);
+}
+
+function handleAcceptRequest(requestStatusField, objectId, currentAccountId) {
+    requestStatusField.textContent = 'Request Status: Accepted';
+
+    fetch(`/database/requests/${objectId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+                // UPDATES THE 'request_status' ONLY TO 'Accepted'
+        body: JSON.stringify({ request_status: 'Accepted', 
+        handled_by: `${currentAccountId}`  }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Request accepted:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+    window.location.href = "/library-management-system/pending-requests";
+}
+
+function handleDeclineRequest(requestStatusField, objectId, currentAccountId) {
+    requestStatusField.textContent = 'Request Status: Rejected';
+    fetch(`/database/requests/${objectId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // UPDATES THE 'request_status' ONLY TO 'Rejected'
+        body: JSON.stringify({ request_status: 'Rejected', handled_by: `${currentAccountId}` }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Request declined:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+    window.location.href = "/library-management-system/pending-requests";
+}
+
+async function getUsernameById(account_id){
+    // const response = await fetch(`/database/accounts/${account_id}`)
+    
+    // if(!response.ok){
+    //     throw new Error('Could not establish a connection to the accounts')
+    // }
+    // const data = await response.json();
+    // var givenName = data.givne_name;
+    // var lastName = data.last_name;
+
+    // const fullName = givenName + " " + lastName;
+    // console.log(fullName);
+    // return fullName;
+
+    await fetch(`/database/accounts/${account_id}`)
+    .then(response=> {
+        console.log('Successfully established a connection ot the participants collection ')
+    })
+    
+    
+}
+
+ // SCRIPT FOR SIDEBAR
+ function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle('active');
+    }
+    // SCRIPT FOR THE SUBMENU SIDEBAR
+    function toggleSubMenu() {
+        var subMenu = document.getElementById("subMenuDiv");
+        subMenu.classList.toggle('active');
+    }
+    // FUNCTION FOR HIDING THE SUBMENU
+    function hideSubMenu() {
+    var subMenu = document.getElementById("subMenuDiv");
+    subMenu.classList.remove('active'); 
+    subMenu.classList.add('inactive')
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const accountPermissions = localStorage.getItem("accountType");
+
+    const sidebar = document.getElementById('sidebar');
+    const subMenuDiv = document.getElementById('subMenuDiv');
+
+    const userLinks = [
+        { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
+        { text: 'Profile', href: '/library-management-system/profile' },
+        { text: 'Dashboard', href: '/library-management-system/dashboard' },
+        { text: 'Book Inventory', href: '/library-management-system/book-inventory' },
+    ];
+
+    const userSubMenuLinks = [
+        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
+        { text: 'History Requests', href: '/library-management-system/history-requests' },
+    ];
+
+    const librarianLinks = [
+        { text: 'Manage Accounts', href: '/library-management-system/manage-accounts' },
+        { text: 'Manage Books', href: '/library-management-system/manage-books' },
+        { text: 'Dashboard', href: '/library-management-system/dashboard' },
+        { text: 'Profile', href: '/library-management-system/profile' },
+    ];
+
+    const librarianSubMenuLinks = [
+        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
+        { text: 'History Requests', href: '/library-management-system/history-requests' },
+    ];
+
+    let linksToAdd = [];
+    let subMenuLinksToAdd = [];
+
+    if (accountPermissions === 'User') {
+        linksToAdd = userLinks;
+        subMenuLinksToAdd = userSubMenuLinks;
+    } else if (accountPermissions === 'Librarian') {
+        linksToAdd = librarianLinks;
+        subMenuLinksToAdd = librarianSubMenuLinks;
+    }
+
+    linksToAdd.forEach(link => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.text;
+        div.appendChild(a);
+        sidebar.appendChild(div);
+    });
+
+    subMenuLinksToAdd.forEach(link => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.text;
+        div.appendChild(a);
+        subMenuDiv.appendChild(div);
+    });
+});
+
+
+
+
+
+
+
+
+
+    // function updateFine(return_date, fine) {
+    // // Get the current date
+    // const currentDate = new Date();
+
+    // // Parse the return date from the returnDateField
+    // const returnDate = new Date(return_date);
+
+    // // Calculate the difference in milliseconds between the current date and the return date
+    // const timeDiff = currentDate.getTime() - returnDate.getTime();
+    // const daysPassed = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert milliseconds to days and round up
+
+    // // Calculate the fine based on the number of days passed
+    // const calculatedFine = daysPassed > 0 ? (daysPassed * 50) : 0;
+
+    // // Update the 'fine' variable by adding the calculated fine
+    // fine += calculatedFine;
+
+    // return fine;
+// }
+
+    </script>
+</body>
+</html>

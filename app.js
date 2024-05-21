@@ -110,14 +110,109 @@ app.post('/database/books', (req, res) =>{
 })    
 
 
+app.get('/database/requests', (req, res) => {
+    let requests = [ ]
+
+    database.collection('requests')
+        .find()
+
+        .forEach(request => requests.push(request))
+        .then(() =>{
+            res.status(200).json(requests)
+        })
+        .catch(() =>{
+            res.status(200).json({
+                error: 'Could not access requests collection'
+            })
+        })
+})
 
 
+app.post('/database/requests', (req, res) =>{
+    const request = req.body
+    console.log(request)
 
+    database.collection('requests')
+    .insertOne(request)
+    .then(result => {
+        res.status(201).json(result.ops[0]); // Send the inserted document in the response
+    })
+    .catch(err => {
+        res.status(500).json({
+            err: 'Could not add new request'
+        })
+    })
+})    
 
+app.get('/database/requests/:id', (req, res) => {
+    if (ObjectId.isValid(req.params.id)){
+        const requestID = new ObjectId(req.params.id)
 
+        database.collection('requests')
+        .findOne({ _id: requestID})
+        .then(doc => {
+            if (doc) {
+                res.status(200).json(doc);
+            }
+            else{
+                res.status(404).json({error: 'Request not found'});
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ error: 'Could not connect to the requests collection' });
+        });
+        } else {
+            res.status(500).json({error: "Invalid Request ID"})
+}})
+    
 
+app.delete('/database/requests/:id', (req, res) =>{
+    if(ObjectId.isValid(req.params.id)) {
+        const requestID = new ObjectId(req.params.id)
+        database.collection('requests')
+        .deleteOne({ _id: requestID})
+        .then(result => {
+            if (result){
+                    res.status(200).json(result);
+                } else {
+                    res.status(404).json({ error: 'Request cannot be delete' });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                res.status(500).json({ error: 'Could not connect to the requests collection' });
+                    });
+            } else {
+                res.status(500).json({ error: 'Invalid Request ID' });
+            }
+})
 
+app.patch('/database/requests/:id', (req, res) => {
+    const requestID = req.params.id;
 
+    if (ObjectId.isValid(requestID)) {
+        const updateFields = req.body; // Assuming req.body contains the fields to update
+
+        database.collection('requests')
+            .updateOne(
+                { _id: new ObjectId(requestID) },
+                { $set: updateFields } // Using $set to specify the fields to update
+            )
+            .then(result => {
+                if (result.matchedCount > 0) {
+                    res.status(200).json(result);
+                } else {
+                    res.status(404).json({ error: 'Request not found' });
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ error: 'An error occurred', details: err });
+            });
+    } else {
+        res.status(400).json({ error: 'Invalid Request ID' });
+    }
+});
 
 
 
@@ -190,6 +285,14 @@ app.get('/library-management-system/manage-books', (req, res) => {
 app.get('/library-management-system/book-details', (req, res) => {
     res.render('libraryBookInfo')
 })
+
+app.get('/library-management-system/pending-requests', (req, res) => {
+    res.render('libraryPendingRequests')
+})
+app.get('/library-management-system/history-requests', (req, res) => {
+    res.render('libraryHistoryRequests')
+})
+
 // // app.get('/library-management-system/login/librarian/dashboard/add_book', (req, res) => {
 // //     res.render('add_book')
 // // })

@@ -147,6 +147,7 @@
         <img id="profile_picture">&nbsp;&nbsp;&nbsp;&nbsp;
          <p><a href="">Log Out</a></p> -->
     </div>
+    
     <button id="addBookButton">Add Book</button>
 <div id="addBookDiv" class="hideContent">
     <h1 id="AddBookTag">Add Book</h1>
@@ -223,22 +224,22 @@
         }
         reader.readAsDataURL(image); //RETURNS THE FILE DATA
     }
-        // SCRIPT FOR SIDEBAR
-    function toggleSidebar() {
-      var sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle('active');
-    }
+//         // SCRIPT FOR SIDEBAR
+//     function toggleSidebar() {
+//       var sidebar = document.getElementById("sidebar");
+//       sidebar.classList.toggle('active');
+//     }
 
-    function toggleSubMenu() {
-      var subMenu = document.getElementById("librarianSubMenu");
-      subMenu.classList.toggle('active');
-    }
+//     function toggleSubMenu() {
+//       var subMenu = document.getElementById("librarianSubMenu");
+//       subMenu.classList.toggle('active');
+//     }
 
-    function hideSubMenu() {
-    var subMenu = document.getElementById("librarianSubMenu");
-    subMenu.classList.remove('active'); // Add inactive class to hide submenu
-    subMenu.classList.add('inactive')
-}
+//     function hideSubMenu() {
+//     var subMenu = document.getElementById("librarianSubMenu");
+//     subMenu.classList.remove('active'); // Add inactive class to hide submenu
+//     subMenu.classList.add('inactive')
+// }
     function generateBookID() {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const length = 6;
@@ -387,8 +388,8 @@ function createBookDataTable(bookId, bookTitle, bookTotalCopies, bookCopiesAvail
     ];
 
     const librarianSubMenuLinks = [
-        { text: 'Pending Requests', href: '/pending-requests' },
-        { text: 'History Requests', href: '/history-requests' },
+        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
+        { text: 'History Requests', href: '/library-management-system/history-requests' },
     ];
 
     let linksToAdd = [];
