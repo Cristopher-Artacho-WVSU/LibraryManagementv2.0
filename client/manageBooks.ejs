@@ -316,7 +316,8 @@ document.addEventListener("DOMContentLoaded", function(){
                 field.title,
                 field.copies,
                 field.copies_available,
-                field.copies_borrowed
+                field.copies_borrowed,
+                field._id
             );
             console.log('Passed through the createAccountDataTable function')
         });
@@ -326,7 +327,11 @@ document.addEventListener("DOMContentLoaded", function(){
         throw new Error('Error Fetching accounts');
     });
 });
-function createBookDataTable(bookId, bookTitle, bookTotalCopies, bookCopiesAvailable, bookCopiesBorrowed){
+async function createBookDataTable(bookId, bookTitle, bookTotalCopies, bookCopiesAvailable, bookCopiesBorrowed, _id){
+    const currentlyBorrowedCopies =  await checkBookAvailability(bookId);
+    const currentlyAvailableCopies = bookTotalCopies - currentlyBorrowedCopies;
+
+    
     const bookCellData = document.getElementById("bookTableData")
     const tableRow = document.createElement("tr");
 
@@ -334,10 +339,30 @@ function createBookDataTable(bookId, bookTitle, bookTotalCopies, bookCopiesAvail
     <td>${bookId}</td>
     <td>${bookTitle}</td>
     <td>${bookTotalCopies}</td>
-    <td>${bookCopiesAvailable}</td>
-    <td>${bookCopiesBorrowed}</td>`;
+    <td>${currentlyAvailableCopies}</td>
+    <td>${currentlyBorrowedCopies}</td>`;
     
     bookCellData.append(tableRow)
+}
+
+async function checkBookAvailability(bookId) {
+    const response = await fetch(`/database/requests?book_id=${bookId}`, {
+        method: 'GET'
+    });
+
+    if (!response.ok) {
+        console.log('Could not establish a connection to the requests');
+        return 0; // Return 0 or handle the error as needed
+    }
+
+    const data = await response.json();
+
+    // Filter and count the statuses "Accepted" or "Pending"
+    const count = data.filter(request => 
+        request.request_status === 'Accepted' || request.request_status === 'Pending'
+    ).length;
+
+    return count;
 }
     // CREDENTIALS
     // const username = sessionStorage.getItem("username");

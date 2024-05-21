@@ -51,7 +51,28 @@ app.get('/database/accounts', (req, res) => {
         })
     })
 })
-// app.get()
+app.get('/database/accounts/:id', (req, res) => {
+    if (ObjectId.isValid(req.params.id)){
+        const accountID = new ObjectId(req.params.id)
+
+        database.collection('participants')
+        .findOne({ _id: accountID})
+        .then(doc => {
+            if (doc) {
+                res.status(200).json(doc);
+            }
+            else{
+                res.status(404).json({error: 'Request not found'});
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ error: 'Could not connect to the requests collection' });
+        });
+        } else {
+            res.status(500).json({error: "Invalid Request ID"})
+}})
+
 app.post('/database/accounts', (req, res) => {
     const postAccount = req.body
     console.log(postAccount)
@@ -143,7 +164,7 @@ app.post('/database/requests', (req, res) =>{
         })
     })
 })    
-
+// FOR GETTING THE SINGULAR DOCUMENTS
 app.get('/database/requests/:id', (req, res) => {
     if (ObjectId.isValid(req.params.id)){
         const requestID = new ObjectId(req.params.id)
@@ -166,7 +187,7 @@ app.get('/database/requests/:id', (req, res) => {
             res.status(500).json({error: "Invalid Request ID"})
 }})
     
-
+// FOR DELETING THE REQUESTS
 app.delete('/database/requests/:id', (req, res) =>{
     if(ObjectId.isValid(req.params.id)) {
         const requestID = new ObjectId(req.params.id)
@@ -187,7 +208,7 @@ app.delete('/database/requests/:id', (req, res) =>{
                 res.status(500).json({ error: 'Invalid Request ID' });
             }
 })
-
+// FOR UPDATING THE REQUESTS
 app.patch('/database/requests/:id', (req, res) => {
     const requestID = req.params.id;
 
