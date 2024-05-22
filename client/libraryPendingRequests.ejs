@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Error fetching requests. Please try again');
         });
 });
-function showPendingRequests(request_id, book_id, account_id, borrow_date, return_date, request_type, request_status, account_type, _id, currentAccountId) {
+async function showPendingRequests(request_id, book_id, account_id, borrow_date, return_date, request_type, request_status, account_type, _id, currentAccountId) {
     console.log('Account Type in showPendingRequests:', account_type);
     
     const requestContainer = document.getElementById("pendingRequestsContainer");
@@ -180,17 +180,16 @@ function showPendingRequests(request_id, book_id, account_id, borrow_date, retur
     const pendingRequestDiv = document.createElement('div');
     pendingRequestDiv.classList.add('requestDiv');
 
-
-
     const requestIDField = document.createElement('p'); 
     requestIDField.textContent = 'Request ID: ' + request_id;
     
     const bookIDField = document.createElement('p');
-    bookIDField.textContent = 'Book ID: ' + book_id;
+    const bookTitle = await getBookTitleById(book_id);
+    bookIDField.textContent = 'Book Title: ' + bookTitle;
 
     const accountIDField = document.createElement('p');
-    accountIDField.textContent = getUsernameById(account_id);
-    // accountIDField.textContent = 'Account ID: ' + account_id;
+    const accountFullName = await getUsernameById(account_id);
+    accountIDField.textContent = 'Account Name: ' + accountFullName;
 
     const borrowDateRequestField = document.createElement('p');
     borrowDateRequestField.textContent = 'Borrow Date: ' + borrow_date;
@@ -229,6 +228,7 @@ function showPendingRequests(request_id, book_id, account_id, borrow_date, retur
 
     requestContainer.appendChild(pendingRequestDiv);
 }
+
 
 function handleAcceptRequest(requestStatusField, objectId, currentAccountId) {
     requestStatusField.textContent = 'Request Status: Accepted';
@@ -273,25 +273,51 @@ function handleDeclineRequest(requestStatusField, objectId, currentAccountId) {
 }
 
 async function getUsernameById(account_id){
-    // const response = await fetch(`/database/accounts/${account_id}`)
-    
-    // if(!response.ok){
-    //     throw new Error('Could not establish a connection to the accounts')
-    // }
-    // const data = await response.json();
-    // var givenName = data.givne_name;
-    // var lastName = data.last_name;
+    const response = await fetch(`/database/accounts?account_id=${account_id}`, {
+        method: 'GET'
+    });
+    if(!response.ok){
+        console.log('Could not establish a connection to the accounts', account_id);
+        return 'Could not fetch the Full Name';
+    }
 
-    // const fullName = givenName + " " + lastName;
-    // console.log(fullName);
-    // return fullName;
+    const accountData = await response.json();
 
-    await fetch(`/database/accounts/${account_id}`)
-    .then(response=> {
-        console.log('Successfully established a connection ot the participants collection ')
-    })
-    
-    
+    const fullName = accountData.find(accountparam => accountparam.account_id === account_id);
+    if (fullName){
+        const {
+            last_name,
+            given_name
+        } = fullName;
+        return given_name + " " + last_name;
+    }
+    else{
+        return 'Could not fetch the Full Name';
+    }
+}
+
+
+async function getBookTitleById(book_id){
+    const response = await fetch(`/database/books?book_id=${book_id}`, {
+        method: 'GET'
+    });
+    if(!response.ok){
+        console.log('Could not establish a connection to the accounts', book_id);
+        return 'Could not fetch the Full Name';
+    }
+
+    const bookData = await response.json();
+
+    const bookTitle = bookData.find(accountparam => accountparam.book_id === book_id);
+    if (bookTitle){
+        const {
+            title
+        } = bookTitle;
+        return title;
+    }
+    else{
+        return 'Could not fetch the Full Name';
+    }
 }
 
  // SCRIPT FOR SIDEBAR
