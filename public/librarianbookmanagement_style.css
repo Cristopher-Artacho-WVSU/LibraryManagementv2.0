@@ -23,24 +23,24 @@ body {
   background-size: cover;
 }
 
+/*NAVIGATION BAR*/
 .navbar{
   padding: 10px;
   background-color: blanchedalmond;
   grid-column: 1/span 5;
+  display: block;
+}
+.navbar h1{
   text-align: center;
 }
-.navbar li{
+.logout{
+  margin-top: -50px;
+  float: right;
+  padding: 0 30px;
+}
+.logout a{
   color: black;
   text-decoration: none;
-  display: inline-block;
-}
-.navbar a{
-  color: black;
-  text-decoration: none;
-}
-table{
-  margin: 0 auto;
-  border: none;
 }
 
 /* SIDEBAR */
@@ -50,7 +50,7 @@ table{
     position: fixed;
     top: 0px;
     left: -250px;
-    padding-top: 35px;
+    padding-top: 100px;
     background-color: beige;
     transition: left 0.3s ease;
     z-index: 3;
@@ -61,14 +61,15 @@ table{
     text-decoration: none;
     padding: 20px;
     color: black;
-    background-color: #f5f5f5;
+    background-color: white;
     margin: 0px;
-    border-radius: 10px;
-    box-shadow: 10px 10px black 0.5;
+    border-radius: 10px 0px 0px 10px;
   }
-
+  
   .sidebar a:hover{
     background-color: blanchedalmond;
+    box-shadow: 0 3px 30px rgb(0 0 0 / 0.2);
+    transition: all .3s ease-in-out;
   }
   
   .sidebar.active {
@@ -79,8 +80,9 @@ table{
     padding: 20px;
     margin-left: 10px;
     font-size: 18px;
-    color: white;
+    color: black;
     font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
   }
   
   .sidebar ul li:hover {
@@ -98,7 +100,9 @@ table{
   
   .menu-toggle i {
     font-size: 24px;
-    color: #fff;
+    color: black;
+    text-decoration: none;
+    padding: 20px;
   }
   
   .sub-menu {
