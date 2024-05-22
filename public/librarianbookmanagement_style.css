@@ -17,7 +17,7 @@ body {
   overflow: hidden;
   filter: blur(50px);
   z-index: -1;
-  background-attachment: fixed;
+  position: fixed;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
