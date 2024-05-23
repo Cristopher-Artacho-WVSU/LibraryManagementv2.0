@@ -21,6 +21,7 @@
   // const profile_picture = localStorage.getItem("profile_picture");
   // document.getElementById("profilePicture").src = profile_picture;
 
+  document.getElementById("profilePicture").src = localStorage.getItem("profilePicture")
 // SCRIPT FOR SIDEBAR
 function toggleSidebar() {
   var sidebar = document.getElementById("sidebar");
@@ -134,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
   img.src = book.picture;
   // THE title GETS ITS TEXTCONTENT FROM THE FIELD 'title'
   const title = document.createElement("div");
-  title.classList.add("title");
+  title.classList.add("titlx`e");
   title.textContent = book.title;
 
   // THE PURPOSE OF THIS IS THAT WHEN THE bookCatalogue IS CLICKED, THE VALUES FOR THESE ARE STORED AND WILL BE USED IN THE bookInfo WEBPAGE

@@ -8,12 +8,12 @@
     var picture = localStorage.getItem("picture");
     
     // SET THE VALUES FOR THE FIELDS 
-    document.getElementById("bookId").textContent = book_id;
-    document.getElementById("title").textContent = title;
-    document.getElementById("author").textContent = author;
-    document.getElementById("date").textContent = date;
-    document.getElementById("genre").textContent = genre;
-    document.getElementById("copies").textContent = copies;
+    document.getElementById("bookId").textContent = "Book ID: " + book_id;
+    document.getElementById("title").textContent = "Book Title: " + title;
+    document.getElementById("author").textContent = "Book Author: " +author;
+    document.getElementById("date").textContent = "Published Date: " +date;
+    document.getElementById("genre").textContent = "Book Genre: " +genre;
+    document.getElementById("copies").textContent = "Book Copies Avilable: " +copies;
     document.getElementById("picture").src = picture;
 
 

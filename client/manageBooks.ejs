@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="/signup_style.css">
     <link rel="stylesheet" href="/manage_style.css">
+    <link rel="stylesheet" href="/librarianbookmanagement_style.css">
     <style>
 
     </style>
@@ -18,8 +19,9 @@
     <img class="background">
     <!-- NAV BAR -->
     <div class="navbar">
-        <h1>Manage Books</h1>
+        <h1>Manage Accounts</h1>
         <div class="logout">
+            <img id="profilePicture">
             <a href='/library-management-system/login'>Log out</a>
         </div>
     </div>
@@ -79,10 +81,12 @@
         <th>Total Copies</th>
         <th>Copies Available</th>
         <th>Copies Borrowed</th>
+        <th>Last Edited By:</th>
     </thead>
     <tbody id="bookTableData"></tbody>
 </table>
     <script>
+    document.getElementById("profilePicture").src = localStorage.getItem("profilePicture")
 
     // MAKING THE addBookForm VISIBLE
     document.getElementById('addBookButton').addEventListener('click', function(){
@@ -161,10 +165,11 @@ function addBook() {
             reader.onload = function () {
                 const picture = reader.result;
             }
+            const edited_by = localStorage.getItem("accountId")
             
 
             //CREATES THE JSON FILE
-            const book = {book_id, title, author, date, copies, genre, picture, copies_available, copies_borrowed};
+            const book = {book_id, title, author, date, copies, genre, picture, copies_available, copies_borrowed, edited_by};
             
 
             
@@ -209,7 +214,8 @@ document.addEventListener("DOMContentLoaded", function(){
                 field.copies,
                 field.copies_available,
                 field.copies_borrowed,
-                field._id
+                field._id,
+                field.edited_by
             );
             console.log('Passed through the createAccountDataTable function')
         });
@@ -219,10 +225,11 @@ document.addEventListener("DOMContentLoaded", function(){
         throw new Error('Error Fetching accounts');
     });
 });
-async function createBookDataTable(bookId, bookTitle, bookTotalCopies, bookCopiesAvailable, bookCopiesBorrowed, _id){
+async function createBookDataTable(bookId, bookTitle, bookTotalCopies, bookCopiesAvailable, bookCopiesBorrowed, _id, edited_by){
     const currentlyBorrowedCopies =  await checkBookAvailability(bookId);
     const currentlyAvailableCopies = bookTotalCopies - currentlyBorrowedCopies;
-
+    
+    const librarianFullName =  await getFullNameByHandleId(edited_by)
     
     const bookCellData = document.getElementById("bookTableData")
     const tableRow = document.createElement("tr");
@@ -232,9 +239,30 @@ async function createBookDataTable(bookId, bookTitle, bookTotalCopies, bookCopie
     <td>${bookTitle}</td>
     <td>${bookTotalCopies}</td>
     <td>${currentlyAvailableCopies}</td>
-    <td>${currentlyBorrowedCopies}</td>`;
-    
+    <td>${currentlyBorrowedCopies}</td>
+    <td>${librarianFullName}</td>`;
+
+    patchBookData(_id, currentlyAvailableCopies, currentlyBorrowedCopies)
     bookCellData.append(tableRow)
+
+
+//     const response = await fetch('/database/books', {
+//     method: 'PATCH',
+//     headers: {
+//         'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//         copies_available: currentlyAvailableCopies,
+//         copies_borrowed: currentlyBorrowedCopies
+//     }),
+// });
+
+// if (!response.ok) {
+//     throw new Error('Network response was not ok');
+// }
+
+// const data = await response.json();
+// console.log('Book Updated:', data);
 }
 
 async function checkBookAvailability(bookId) {
@@ -249,12 +277,39 @@ async function checkBookAvailability(bookId) {
 
     const data = await response.json();
 
-    // Filter and count the statuses "Accepted" or "Pending"
+    // Filter and count the statuses "Accepted" or "Pending" for the specific book ID
     const count = data.filter(request => 
-        request.request_status === 'Accepted' || request.request_status === 'Pending'
+        request.book_id === bookId && 
+        (request.request_status === 'Accepted' || request.request_status === 'Pending')
     ).length;
 
     return count;
+}
+
+async function patchBookData(bookId, copiesAvailable, copiesBorrowed) {
+    try {
+        const response = await fetch(`/database/books/${bookId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                copies_available: copiesAvailable,
+                copies_borrowed: copiesBorrowed
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log('Book Updated:', data);
+        return true;
+    } catch (error) {
+        console.error('Error updating book data:', error);
+        return false;
+    }
 }
     // CREDENTIALS
     // const username = sessionStorage.getItem("username");
@@ -338,6 +393,31 @@ async function checkBookAvailability(bookId) {
         subMenuDiv.appendChild(div);
     });
 });
+
+async function getFullNameByHandleId(handled_by){
+    const response = await fetch(`/database/accounts?account_id=${handled_by}`, {
+        method: 'GET'
+    });
+    if(!response.ok){
+        console.log('Could not establish a connection to the accounts', handled_by);
+        return 'Could not fetch the Full Name';
+    }
+
+    const accountData = await response.json();
+
+    const fullName = accountData.find(accountparam => accountparam.account_id === handled_by);
+    if (fullName){
+        const {
+            last_name,
+            given_name
+        } = fullName;
+        return given_name + " " + last_name;
+    }
+    else{
+        return 'Could not fetch the Full Name';
+    }
+}
+
 
     </script>
 </body>

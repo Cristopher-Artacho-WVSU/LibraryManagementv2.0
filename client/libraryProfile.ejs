@@ -18,8 +18,9 @@
     <img class="background">
     <!-- NAV BAR -->
     <div class="navbar">
-        <h1>Profile</h1>
+        <h1>Manage Accounts</h1>
         <div class="logout">
+            <img id="profilePicture">
             <a href='/library-management-system/login'>Log out</a>
         </div>
     </div>
@@ -116,8 +117,8 @@
     ];
 
     const librarianSubMenuLinks = [
-        { text: 'Pending Requests', href: '/pending-requests' },
-        { text: 'History Requests', href: '/history-requests' },
+        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
+        { text: 'History Requests', href: '/library-management-system/history-requests' },
     ];
 
     let linksToAdd = [];
@@ -149,6 +150,7 @@
         subMenuDiv.appendChild(div);
     });
 });
+document.getElementById("profilePicture").src = localStorage.getItem("profilePicture")
 
 
     document.getElementById("accountId").value = localStorage.getItem("accountId")

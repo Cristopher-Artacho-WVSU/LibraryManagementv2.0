@@ -10,15 +10,15 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <style>
-    </style>
+
 </head>
 <body>
     <img class="background">
     <!-- NAV BAR -->
     <div class="navbar">
-        <h1>History Request</h1>
+        <h1>Manage Accounts</h1>
         <div class="logout">
+            <img id="profilePicture">
             <a href='/library-management-system/login'>Log out</a>
         </div>
     </div>
@@ -41,6 +41,7 @@
 
 
     <script>
+document.getElementById("profilePicture").src = localStorage.getItem("profilePicture")
 
 document.addEventListener('DOMContentLoaded', () => {
 

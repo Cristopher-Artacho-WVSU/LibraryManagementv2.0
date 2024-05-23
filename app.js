@@ -130,6 +130,55 @@ app.post('/database/books', (req, res) =>{
     })
 })    
 
+// FOR GETTING THE SINGULAR DOCUMENTS
+app.get('/database/books/:id', (req, res) => {
+    if (ObjectId.isValid(req.params.id)){
+        const bookID = new ObjectId(req.params.id)
+
+        database.collection('books')
+        .findOne({ _id: bookID})
+        .then(doc => {
+            if (doc) {
+                res.status(200).json(doc);
+            }
+            else{
+                res.status(404).json({error: 'Request not found'});
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ error: 'Could not connect to the requests collection' });
+        });
+        } else {
+            res.status(500).json({error: "Invalid BookID"})
+}})
+
+app.patch('/database/books/:id', (req, res) => {
+    const bookID = req.params.id;
+
+    if (ObjectId.isValid(bookID)) {
+        const updateFields = req.body; // Assuming req.body contains the fields to update
+
+        database.collection('books')
+            .updateOne(
+                { _id: new ObjectId(bookID) },
+                { $set: updateFields } // Using $set to specify the fields to update
+            )
+            .then(result => {
+                if (result.matchedCount > 0) {
+                    res.status(200).json(result);
+                } else {
+                    res.status(404).json({ error: 'Request not found' });
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ error: 'An error occurred', details: err });
+            });
+    } else {
+        res.status(400).json({ error: 'Invalid Book ID' });
+    }
+});
+
 
 app.get('/database/requests', (req, res) => {
     let requests = [ ]

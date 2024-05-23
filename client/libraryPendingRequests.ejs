@@ -18,8 +18,9 @@
     <img class="background">
     <!-- NAV BAR -->
     <div class="navbar">
-        <h1>Pending Request</h1>
+        <h1>Manage Accounts</h1>
         <div class="logout">
+            <img id="profilePicture">
             <a href='/library-management-system/login'>Log out</a>
         </div>
     </div>
@@ -43,6 +44,7 @@
 
 
     <script>
+document.getElementById("profilePicture").src = localStorage.getItem("profilePicture")
 
 document.addEventListener('DOMContentLoaded', () => {
 

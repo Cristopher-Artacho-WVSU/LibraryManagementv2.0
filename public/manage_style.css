@@ -33,6 +33,11 @@ body {
   .navbar h1{
     text-align: center;
   }
+  .navbar img{
+    height: 50px;
+    width: 50px;
+    border: 1px solid black; /* Add a solid black border with a width of 1px */
+  }
   .logout{
     margin-top: -50px;
     float: right;

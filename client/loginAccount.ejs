@@ -54,7 +54,8 @@
                     contact_number,
                     profile_picture,
                     address,
-                    account_type
+                    account_type,
+                    _id
                 } = userFound;
                 localStorage.setItem("accountId", account_id);
                 localStorage.setItem("username", username);
@@ -66,7 +67,8 @@
                 localStorage.setItem("profilePicture", profile_picture);
                 localStorage.setItem("address", address);
                 localStorage.setItem("accountType", account_type);
-
+                localStorage.setItem("_id", _id)
+                // alert(_id)
                 window.location.href = '/library-management-system/dashboard';
             } else {
                 alert('Invalid username or password. Please try again.');

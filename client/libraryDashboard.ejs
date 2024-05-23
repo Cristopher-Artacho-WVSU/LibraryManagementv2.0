@@ -9,15 +9,14 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
-    <style>
-    </style>
 </head>
 <body>
     <img class="background">
     <!-- NAV BAR -->
     <div class="navbar">
-        <h1>Dashboard</h1>
+        <h1>Manage Accounts</h1>
         <div class="logout">
+            <img id="profilePicture">
             <a href='/library-management-system/login'>Log out</a>
         </div>
     </div>
@@ -34,7 +33,61 @@
         <i class="fas fa-bars thin-menu-icon"></i>
     </div>
 
+    <div id="librarianDashboard" class="hideContent">
+        <p>Current Status</p>
+        <div class="dashboardSection">
+            <div id="currentlyBorrowedBooksTotal" class="librarianDashboardDiv"></div>
+            <div id="currentlyReservedBooksTotal" class="librarianDashboardDiv"></div>
+        </div>
+
+        <p>History-Based</p>
+        <div class="dashboardSection">
+            <div id="historyBorrowedBooksTotal" class="librarianDashboardDiv"></div>
+            <div id="returnedBooksTotal" class="librarianDashboardDiv"></div>
+            <div id="unreturnedBooksTotal" class="librarianDashboardDiv"></div>
+            <div id="fineAmountUserTotal" class="librarianDashboardDiv"></div>            
+        </div>
+
+        <p>Library Content</p>
+        <div class="dashboardSection">
+            <div id="totalUserAccounts" class="librarianDashboardDiv"></div>
+            <div id="totalLibrarianAccounts" class="librarianDashboardDiv"></div>
+            <div id="totalBooksinCatalogue" class="librarianDashboardDiv"></div>
+        </div>
+
+    </div>
+
+    <div id="userDashboard" class="hideContent">
+        <p>Current Status</p>
+        <div class="dashboardSection">
+            <div id="currentlyBorrowedBooks" class="userDashboardDiv"></div>
+            <div id="currentlyReservedBooks" class="userDashboardDiv"></div>
+            <div id="fineAmountUser" class="userDashboardDiv"></div>
+            <div id="unreturnedBooks" class="userDashboardDiv"></div>
+        </div>
+
+        <p>History-Based</p>
+        <div class="dashboardSection">
+            <div id="historyBorrowedBooks" class="userDashboardDiv"></div>
+            <div id="returnedBooks" class="userDashboardDiv"></div>
+            
+            
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
     <script>
+    document.getElementById("profilePicture").src = localStorage.getItem("profilePicture")
+
     // SCRIPT FOR SIDEBAR
     function toggleSidebar() {
         var sidebar = document.getElementById("sidebar");
@@ -52,12 +105,13 @@
     subMenu.classList.add('inactive')
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
     const accountPermissions = localStorage.getItem("accountType");
-
+    const accountID = localStorage.getItem("accountId")
     const sidebar = document.getElementById('sidebar');
     const subMenuDiv = document.getElementById('subMenuDiv');
 
+    document.addEventListener("DOMContentLoaded", function() {
+    
     const userLinks = [
         { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
         { text: 'Profile', href: '/library-management-system/profile' },
@@ -111,8 +165,306 @@
         subMenuDiv.appendChild(div);
     });
 });
+console.log(accountPermissions)
 
+document.addEventListener('DOMContentLoaded', async function () {
+
+if (accountPermissions === "User") {
+    document.getElementById('userDashboard').style.display = 'flex';
+
+    document.getElementById('currentlyBorrowedBooks').textContent = 'Currently Borrowed Books: ' + await getCurrentlyBorrowedBooks();
+    document.getElementById('currentlyReservedBooks').textContent = 'Currently Reserved Books: ' + await getCurrentlyReservedBooks();
+    document.getElementById('fineAmountUser').textContent = 'Total Fines: ' + await getCurrentFineUser();
+    document.getElementById('unreturnedBooks').textContent = 'Unreturned Books: ' + await getCurrentlyUnreturnedBooks();
+    document.getElementById('historyBorrowedBooks').textContent = 'Number of Books borrowed in Total: ' + await getUserBorrowHistory();
+    document.getElementById('returnedBooks').textContent = 'Returned Books: ' + await getUserReturnedBooks();
+
+} else if (accountPermissions === "Librarian") {
+    document.getElementById('librarianDashboard').style.display = 'flex';
+
+    // Populate the librarian dashboard divs with content
+    document.getElementById('currentlyBorrowedBooksTotal').textContent = 'Currently Borrowed Books (Total): ' + await getCurrentlyBorrowedBooksTotal();
+    document.getElementById('currentlyReservedBooksTotal').textContent = 'Currently Reserved Books (Total): ' + await getCurrentlyReservedBooksTotal();
+    document.getElementById('historyBorrowedBooksTotal').textContent = 'History of Borrowed Books (Total): ' + await getHistoryBorrowedBooks();
+    document.getElementById('returnedBooksTotal').textContent = 'Returned Books (Total): ' + await getReturnedBooksTotal();
+    document.getElementById('unreturnedBooksTotal').textContent = 'Unreturned Books (Total): ' + await getUnreturnedBooksTotal();
+    document.getElementById('fineAmountUserTotal').textContent = 'Fine Amount (Total): ' + await getFineTotal();
+    document.getElementById('totalUserAccounts').textContent = 'Total User Accounts: ' + await getTotalUsers();
+    document.getElementById('totalLibrarianAccounts').textContent = 'Total Librarian Accounts: ' + await getTotalLibrarians();
+    document.getElementById('totalBooksinCatalogue').textContent = 'Total Books in Catalogue: ' + await getTotalBooks();
+}
+});
+
+async function getCurrentlyBorrowedBooks() {
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+if (!response.ok) {
+    throw new Error('Network response was not ok');
+}
+
+const data = await response.json();
+
+// Assuming the response data is an array of objects where each object represents a book request
+// You need to count the number of items with the status "Accepted"
+const count = data.filter(request => request.request_status === 'Accepted' && request.account_id === accountID).length;
+
+return count;
+}
+
+async function getCurrentlyReservedBooks() {
+    const date = new Date()
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+if (!response.ok) {
+    throw new Error('Network response was not ok');
+}
+
+const data = await response.json();
+const count = data.filter(request => request.request_type === 'Reservation Request' && request.account_id === accountID && request.request_status === "Accepted" && new Date(request.borrow_date) > date).length;
+
+return count;
+}
+
+
+
+async function getCurrentFineUser() {
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+
+    // Assuming the response data is an array of objects where each object represents a book request
+    // You need to sum up the return_fine for items with the status "Accepted" and the same account ID
+    const totalFine = data
+        .filter(request => request.account_id === accountID && request.request_status !== "Returned")
+        .reduce((total, request) => total + request.return_fine, 0);
+
+    return totalFine; // Return the total fine
+}
+
+async function getCurrentlyUnreturnedBooks() {
+    const date = new Date()
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    const count = data.filter(request => request.account_id === accountID && request.request_status === "Accepted" && new Date(request.return_date) < date).length;
+
+    return count;
+}
+
+async function getUserBorrowHistory() {
+
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+
+    // Assuming the response data is an array of objects where each object represents a book request
+    // You need to count the number of items with the status "Accepted"
+    const count = data.filter(request => request.request_type === "Borrow Request" || request.request_type === "Reservation Request" && request.account_id === accountID).length;
+
+    return count;
+}
+
+async function getUserReturnedBooks() {
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+
+    // Assuming the response data is an array of objects where each object represents a book request
+    // You need to count the number of items with the status "Accepted"
+    const count = data.filter(request => request.request_type === "Borrow Request" || request.request_type === "Reservation Request" && request.account_id === accountID && request.request_status === "Returned").length;
+
+    return count;
+}
+
+
+
+
+
+async function getCurrentlyBorrowedBooksTotal() {
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+if (!response.ok) {
+    throw new Error('Network response was not ok');
+}
+
+const data = await response.json();
+
+// Assuming the response data is an array of objects where each object represents a book request
+// You need to count the number of items with the status "Accepted"
+const count = data.filter(request => request.request_status === 'Accepted').length;
+
+return count;
+}
+
+async function getCurrentlyReservedBooksTotal() {
+    const date = new Date()
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+if (!response.ok) {
+    throw new Error('Network response was not ok');
+}
+
+const data = await response.json();
+const count = data.filter(request => request.request_type === 'Reservation Request' && request.request_status === "Accepted" && new Date(request.borrow_date) > date).length;
+
+return count;
+}
+
+async function getReturnedBooksTotal() {
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+
+    // Assuming the response data is an array of objects where each object represents a book request
+    // You need to count the number of items with the status "Accepted"
+    const count = data.filter(request => 
+    (request.request_type === "Borrow Request" || request.request_type === "Reservation Request") && request.request_status === "Returned").length;
+    return count;
+}
+async function getUnreturnedBooksTotal(){
+    const date = new Date()
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    const count = data.filter(request => request.request_status === "Accepted" && new Date(request.return_date) < date).length;
+    return count;
+}
+async function getHistoryBorrowedBooks() {
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+if (!response.ok) {
+    throw new Error('Network response was not ok');
+}
+
+const data = await response.json();
+
+// Assuming the response data is an array of objects where each object represents a book request
+// You need to count the number of items with the status "Accepted"
+const count = data.filter(request => request.request_status === 'Accepted' || request.request_status === 'Returned').length;
+
+return count;
+}
+
+async function getFineTotal() {
+    const response = await fetch(`/database/requests`, {
+    method: 'GET'
+});
+
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+
+    // Assuming the response data is an array of objects where each object represents a book request
+    // You need to sum up the return_fine for items with the status "Accepted" and the same account ID
+    const totalFine = data
+        .filter(request => request.request_status !== "Returned")
+        .reduce((total, request) => total + request.return_fine, 0);
+
+    return totalFine; // Return the total fine
+}
+
+async function getTotalUsers() {
+    const response = await fetch(`/database/accounts`, {
+    method: 'GET'
+});
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    const count = data.filter(request => request.account_type === 'User').length;
+
+return count;
+}
+
+async function getTotalLibrarians() {
+    const response = await fetch(`/database/accounts`, {
+    method: 'GET'
+});
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    const count = data.filter(request => request.account_type === 'Librarian').length;
+
+return count;
+}
+
+async function getTotalBooks() {
+        const response = await fetch(`/database/books`, {
+        method: 'GET'
+    });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        const count = data.length;
+
+    return count;
+}
 
     </script>
+
 </body>
 </html>
