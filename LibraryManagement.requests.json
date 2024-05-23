@@ -1,97 +1,56 @@
 [{
   "_id": {
-    "$oid": "664a72de235b0af9d75007e4"
+    "$oid": "664fbe3ff0ca2e7978e66a37"
   },
-  "request_id": "1rp1AY",
-  "book_id": "nfVOD7",
-  "account_id": "HIkRhP",
-  "borrow_date": "2024-05-20",
-  "return_date": "2024-05-25",
-  "request_type": "Borrow Request",
-  "request_status": "Returned",
-  "return_fine": 0,
-  "handled_by": "2wqFjx"
-},
-{
-  "_id": {
-    "$oid": "664a73f7235b0af9d75007e5"
-  },
-  "request_id": "6vLhcx",
-  "book_id": "nfVOD7",
-  "account_id": "HIkRhP",
-  "borrow_date": "2024-05-20",
-  "return_date": "2024-05-24",
-  "request_type": "Borrow Request",
-  "request_status": "Accepted",
-  "return_fine": 0,
-  "handled_by": "2wqFjx"
-},
-{
-  "_id": {
-    "$oid": "664a741a235b0af9d75007e6"
-  },
-  "request_id": "7IFJ4S",
-  "book_id": "nfVOD7",
-  "account_id": "HIkRhP",
-  "borrow_date": "2024-05-20",
-  "return_date": "2024-05-30",
-  "request_type": "Borrow Request",
-  "request_status": "Accepted",
-  "return_fine": 0,
-  "handled_by": "2wqFjx"
-},
-{
-  "_id": {
-    "$oid": "664b508152088916267799fb"
-  },
-  "request_id": "oOntrq",
-  "book_id": "nfVOD7",
-  "account_id": "aOX22a",
-  "borrow_date": "2024-05-31",
+  "request_id": "BGlcUP",
+  "book_id": "zszAuc",
+  "account_id": "20wHg2",
+  "borrow_date": "2024-05-23",
   "return_date": "2024-05-31",
-  "request_type": "Reservation Request",
+  "request_type": "Borrow Request",
   "request_status": "Rejected",
   "return_fine": 0,
-  "handled_by": "2wqFjx"
+  "handled_by": "HVvZ7f"
 },
 {
   "_id": {
-    "$oid": "664c1642ae373e19307ab550"
+    "$oid": "664fbe4bf0ca2e7978e66a38"
   },
-  "request_id": "cGESBH",
-  "book_id": "nfVOD7",
-  "account_id": "aOX22a",
-  "borrow_date": "2024-05-21",
+  "request_id": "czZLl5",
+  "book_id": "xBsYvE",
+  "account_id": "20wHg2",
+  "borrow_date": "2024-05-22",
   "return_date": "2024-05-31",
-  "request_type": "Borrow Request",
+  "request_type": "Reservation Request",
   "request_status": "Accepted",
   "return_fine": 0,
-  "handled_by": "2wqFjx"
+  "handled_by": "HVvZ7f"
 },
 {
   "_id": {
-    "$oid": "664cbb95700a27d427909257"
+    "$oid": "664fbf30f0ca2e7978e66a39"
   },
-  "request_id": "1r6VZP",
+  "request_id": "grOcns",
   "book_id": "nfVOD7",
-  "account_id": "HIkRhP",
-  "borrow_date": "2024-05-02",
-  "return_date": "2024-05-11",
+  "account_id": "20wHg2",
+  "borrow_date": "2024-05-08",
+  "return_date": "2024-05-16",
   "request_type": "Reservation Request",
-  "request_status": "Returned",
-  "return_fine": 550,
-  "handled_by": "2wqFjx"
+  "request_status": "Accepted",
+  "return_fine": 400,
+  "handled_by": "HVvZ7f"
 },
 {
   "_id": {
-    "$oid": "664cc364700a27d427909258"
+    "$oid": "664fbf3bf0ca2e7978e66a3a"
   },
-  "request_id": "jG9xZt",
+  "request_id": "grOcns",
   "book_id": "nfVOD7",
-  "account_id": "HIkRhP",
-  "borrow_date": "2024-05-21",
-  "return_date": "2024-05-29",
-  "request_type": "Borrow Request",
-  "request_status": "Pending",
-  "return_fine": 0
+  "account_id": "20wHg2",
+  "borrow_date": "2024-05-02",
+  "return_date": "2024-05-20",
+  "request_type": "Reservation Request",
+  "request_status": "Accepted",
+  "return_fine": 200,
+  "handled_by": "HVvZ7f"
 }]

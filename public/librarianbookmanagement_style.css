@@ -37,7 +37,7 @@ body {
   margin-top: -50px;
   float: right;
   padding: 0 30px;
-  z-index: 2; /* Ensure it's in the foreground */
+  z-index: 1; /* Ensure it's in the foreground */
   position: relative; /* Ensure z-index works */
 }
 .logout a{
@@ -260,4 +260,11 @@ th {
   height: 50px;
   width: 50px;
   border: 1px solid black; /* Add a solid black border with a width of 1px */
+}
+
+.book{
+  height: 100px;
+  width: 150px;
+  margin-left: 10px;
+  margin-right: 10px;
 }

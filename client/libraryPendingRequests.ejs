@@ -18,10 +18,10 @@
     <img class="background">
     <!-- NAV BAR -->
     <div class="navbar">
-        <h1>Manage Accounts</h1>
+        <h1>Dashboard</h1>
         <div class="logout">
             <img id="profilePicture">
-            <a href='/library-management-system/login'>Log out</a>
+            <a href='/Edubook.com/login'>Log out</a>
         </div>
     </div>
 
@@ -163,7 +163,7 @@ function handleAcceptRequest(requestStatusField, objectId, currentAccountId) {
     .catch((error) => {
         console.error('Error:', error);
     });
-    window.location.href = "/library-management-system/pending-requests";
+    window.location.href = "/Edubook.com/pending-requests";
 }
 
 function handleDeclineRequest(requestStatusField, objectId, currentAccountId) {
@@ -183,7 +183,7 @@ function handleDeclineRequest(requestStatusField, objectId, currentAccountId) {
     .catch((error) => {
         console.error('Error:', error);
     });
-    window.location.href = "/library-management-system/pending-requests";
+    window.location.href = "/Edubook.com/pending-requests";
 }
 
 async function getUsernameById(account_id){
@@ -258,29 +258,28 @@ async function getBookTitleById(book_id){
     const subMenuDiv = document.getElementById('subMenuDiv');
 
     const userLinks = [
-        { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
-        { text: 'Profile', href: '/library-management-system/profile' },
-        { text: 'Dashboard', href: '/library-management-system/dashboard' },
-        { text: 'Book Inventory', href: '/library-management-system/book-inventory' },
+        { text: 'Book Catalogue', href: '/EduBook.com/book-catalogue' },
+        { text: 'Profile', href: '/EduBook.com/profile' },
+        { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+        { text: 'Book Inventory', href: '/EduBook.com/book-inventory' },
     ];
 
     const userSubMenuLinks = [
-        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
-        { text: 'History Requests', href: '/library-management-system/history-requests' },
+        { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+        { text: 'History Requests', href: '/EduBook.com/history-requests' },
     ];
 
     const librarianLinks = [
-        { text: 'Manage Accounts', href: '/library-management-system/manage-accounts' },
-        { text: 'Manage Books', href: '/library-management-system/manage-books' },
-        { text: 'Dashboard', href: '/library-management-system/dashboard' },
-        { text: 'Profile', href: '/library-management-system/profile' },
+        { text: 'Manage Accounts', href: '/EduBook.com/manage-accounts' },
+        { text: 'Manage Books', href: '/EduBook.com/manage-books' },
+        { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+        { text: 'Profile', href: '/EduBook.com/profile' },
     ];
 
     const librarianSubMenuLinks = [
-        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
-        { text: 'History Requests', href: '/library-management-system/history-requests' },
+        { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+        { text: 'History Requests', href: '/EduBook.com/history-requests' },
     ];
-
     let linksToAdd = [];
     let subMenuLinksToAdd = [];
 

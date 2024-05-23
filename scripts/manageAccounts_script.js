@@ -170,6 +170,7 @@ validateInputs(username, password, last_name, given_name, email_address, contact
     const data = await response.json();
     console.log('User successfully registered:', data);
     alert('User account successfully added!');
+    location.window.href= '/Edubook.com/manage-accounts'
     //REDIRECT TO INDEX AFTER FILLING UP THE FORM
     // window.location.href = '/library-management-system'
 });
@@ -259,29 +260,29 @@ async function createAccountDataTable(accountID, accountUsername, accountEmailAd
 
     document.addEventListener("DOMContentLoaded", function() {
     
-    const userLinks = [
-        { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
-        { text: 'Profile', href: '/library-management-system/profile' },
-        { text: 'Dashboard', href: '/library-management-system/dashboard' },
-        { text: 'Book Inventory', href: '/library-management-system/book-inventory' },
-    ];
-
-    const userSubMenuLinks = [
-        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
-        { text: 'History Requests', href: '/library-management-system/history-requests' },
-    ];
-
-    const librarianLinks = [
-        { text: 'Manage Accounts', href: '/library-management-system/manage-accounts' },
-        { text: 'Manage Books', href: '/library-management-system/manage-books' },
-        { text: 'Dashboard', href: '/library-management-system/dashboard' },
-        { text: 'Profile', href: '/library-management-system/profile' },
-    ];
-
-    const librarianSubMenuLinks = [
-        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
-        { text: 'History Requests', href: '/library-management-system/history-requests' },
-    ];
+        const userLinks = [
+            { text: 'Book Catalogue', href: '/EduBook.com/book-catalogue' },
+            { text: 'Profile', href: '/EduBook.com/profile' },
+            { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+            { text: 'Book Inventory', href: '/EduBook.com/book-inventory' },
+        ];
+    
+        const userSubMenuLinks = [
+            { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+            { text: 'History Requests', href: '/EduBook.com/history-requests' },
+        ];
+    
+        const librarianLinks = [
+            { text: 'Manage Accounts', href: '/EduBook.com/manage-accounts' },
+            { text: 'Manage Books', href: '/EduBook.com/manage-books' },
+            { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+            { text: 'Profile', href: '/EduBook.com/profile' },
+        ];
+    
+        const librarianSubMenuLinks = [
+            { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+            { text: 'History Requests', href: '/EduBook.com/history-requests' },
+        ];
 
     let linksToAdd = [];
     let subMenuLinksToAdd = [];

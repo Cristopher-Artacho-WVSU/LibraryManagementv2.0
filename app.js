@@ -334,32 +334,32 @@ app.patch('/database/requests/:id', (req, res) => {
 
 
 
-app.get('/library-management-system/manage-accounts', (req, res) => {
+app.get('/EduBook.com/manage-accounts', (req, res) => {
     res.render('manageAccounts')
 })
-app.get('/library-management-system/login', (req, res) => {
+app.get('/EduBook.com/login', (req, res) => {
     res.render('loginAccount')
 })
-app.get('/library-management-system/dashboard', (req, res) => {
+app.get('/EduBook.com/dashboard', (req, res) => {
     res.render('libraryDashboard')
 })
-app.get('/library-management-system/profile', (req, res) => {
+app.get('/EduBook.com/profile', (req, res) => {
     res.render('libraryProfile')
 })
-app.get('/library-management-system/book-catalogue', (req, res) => {
+app.get('/EduBook.com/book-catalogue', (req, res) => {
     res.render('libraryBookCatalogue')
 })
-app.get('/library-management-system/manage-books', (req, res) => {
+app.get('/EduBook.com/manage-books', (req, res) => {
     res.render('manageBooks')
 })
-app.get('/library-management-system/book-details', (req, res) => {
+app.get('/EduBook.com/book-details', (req, res) => {
     res.render('libraryBookInfo')
 })
 
-app.get('/library-management-system/pending-requests', (req, res) => {
+app.get('/EduBook.com/pending-requests', (req, res) => {
     res.render('libraryPendingRequests')
 })
-app.get('/library-management-system/history-requests', (req, res) => {
+app.get('/EduBook.com/history-requests', (req, res) => {
     res.render('libraryHistoryRequests')
 })
 

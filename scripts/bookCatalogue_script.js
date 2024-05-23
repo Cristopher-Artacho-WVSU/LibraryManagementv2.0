@@ -46,27 +46,27 @@ const sidebar = document.getElementById('sidebar');
 const subMenuDiv = document.getElementById('subMenuDiv');
 
 const userLinks = [
-  { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
-  { text: 'Profile', href: '/library-management-system/profile' },
-  { text: 'Dashboard', href: '/library-management-system/dashboard' },
-  { text: 'Book Inventory', href: '/library-management-system/book-inventory' },
+  { text: 'Book Catalogue', href: '/EduBook.com/book-catalogue' },
+  { text: 'Profile', href: '/EduBook.com/profile' },
+  { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+  { text: 'Book Inventory', href: '/EduBook.com/book-inventory' },
 ];
 
 const userSubMenuLinks = [
-  { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
-  { text: 'History Requests', href: '/library-management-system/history-requests' },
+  { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+  { text: 'History Requests', href: '/EduBook.com/history-requests' },
 ];
 
 const librarianLinks = [
-  { text: 'Manage Accounts', href: '/library-management-system/manage-accounts' },
-  { text: 'Manage Books', href: '/library-management-system/manage-books' },
-  { text: 'Dashboard', href: '/library-management-system/dashboard' },
-  { text: 'Profile', href: '/library-management-system/profile' },
+  { text: 'Manage Accounts', href: '/EduBook.com/manage-accounts' },
+  { text: 'Manage Books', href: '/EduBook.com/manage-books' },
+  { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+  { text: 'Profile', href: '/EduBook.com/profile' },
 ];
 
 const librarianSubMenuLinks = [
-  { text: 'Pending Requests', href: '/pending-requests' },
-  { text: 'History Requests', href: '/history-requests' },
+  { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+  { text: 'History Requests', href: '/EduBook.com/history-requests' },
 ];
 
 let linksToAdd = [];
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
       localStorage.setItem("picture", book.picture);
 
       // REDIRECTS THE USER/LIBRARIAN TO THE bookInfo WEBPAGE
-      window.location.href = "/library-management-system/book-details";
+      window.location.href = "/Edubook.com/book-details";
   });
   // THE IMAGE AND TITLE IS APPENDED TO THE bookDiv, and the bookDiv will also be appended to the BookCatalogue
   bookDiv.appendChild(img);
