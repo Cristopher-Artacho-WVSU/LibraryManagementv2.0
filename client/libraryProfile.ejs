@@ -3,112 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Profile</title>
+    <link rel="stylesheet" href="/librarianbookmanagement_style.css">
+    <link rel="stylesheet" href="/profile_style.css">
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <style>
-        
-/* SIDEBAR */
- /* Original Sidebar CSS */
-        /* Original Sidebar CSS */
-        .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0px;
-            left: -250px;
-            padding-top: 35px;
-            background-color: #bebdbd;
-            transition: left 0.3s ease;
-            z-index: 3;
-        }
 
-        .sidebar.active {
-            left: 0;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar ul li {
-            padding: 20px;
-            margin-left: 10px;
-            font-size: 18px;
-            color: white;
-            font-family: Arial, Helvetica, sans-serif;
-            cursor: pointer;
-        }
-
-        .sidebar ul li:hover {
-            background-color: #797979;
-            transition: 1s;
-        }
-
-        .menu-toggle {
-            position: fixed;
-            left: 15px;
-            top: 15px;
-            cursor: pointer;
-            z-index: 3;
-        }
-
-        .menu-toggle i {
-            font-size: 24px;
-            color: #fff;
-        }
-
-        .sub-menu {
-            display: none;
-        }
-
-        .sub-menu.active {
-            display: block;
-        }
-
-        .sub-menu a {
-            display: block;
-            padding: 10px;
-            padding-right: 15px;
-            margin-top: 10px;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        /* Additional Styles */
-        .sidebar-content {
-            padding: 20px;
-            margin-left: 10px;
-            font-size: 18px;
-            color: white;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .sidebar-content:hover {
-            background-color: #797979;
-            transition: 1s;
-        }
-        
-        /* Remove bullet points and link highlights */
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
-            outline: none; /* Remove link outline */
-        }
-
-        .sidebar ul li a:hover {
-            color:#a09e9e;
-            transition: 1s;
-        }
     </style>
 </head>
 <body>
+    <img class="background">
+    <!-- NAV BAR -->
+    <div class="navbar">
+        <h1>Profile</h1>
+        <div class="logout">
+            <img id="profilePicture">
+            <a href='/Edubook.com/login'>Log out</a>
+        </div>
+    </div>
+
     <!-- THE DIV ITSELF FOR THE SIDEBAR -->
     <div class="sidebar" id="sidebar">
         
@@ -122,32 +38,41 @@
         <i class="fas fa-bars thin-menu-icon"></i>
     </div>
 
-    <label for="AccountID">Account ID:</label>
-    <input type="text" id="accountId"> <br>
+    <div class="profile_img">
+    </div>
+    <div class="profile_details">
+        
+        <form>         
+            <label for="AccountID">Account ID:</label>
+            <input type="text" id="accountId"> <br>
+            
+            <label for="username">Username:</label>
+            <input type="text" id="username"><br>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password"><br>
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName"><br>
 
-    <label for="username">Username:</label>
-    <input type="text" id="username"><br>
+            <label for="givenName">Given Name:</label>
+            <input type="text" id="givenName"><br>
+            
+            <label for="emailAddress">Email Address:</label>
+            <input type="text" id="emailAddress"><br>
+            
+            <label for="contactNumber">Contact Number</label>
+            <input type="text" id="contactNumber"><br>
+            
+            <label for="address">Address:</label>
+            <input type="text" id="address"><br>
+            
+            <label for="accountType">Account Type:</label>
+            <input type="text" id="accountType"><br>
+    </form>
+    </div>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password"><br>
-
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName"><br>
-
-    <label for="givenName">Given Name:</label>
-    <input type="text" id="givenName"><br>
-
-    <label for="emailAddress">Email Address:</label>
-    <input type="text" id="emailAddress"><br>
-
-    <label for="contactNumber">Contact Number</label>
-    <input type="text" id="contactNumber"><br>
-
-    <label for="address">Address:</label>
-    <input type="text" id="address"><br>
-
-    <label for="accountType">Account Type:</label>
-    <input type="text" id="accountType"><br>
+    
     <script>
     // SCRIPT FOR SIDEBAR
     function toggleSidebar() {
@@ -173,27 +98,27 @@
     const subMenuDiv = document.getElementById('subMenuDiv');
 
     const userLinks = [
-        { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
-        { text: 'Profile', href: '/library-management-system/profile' },
-        { text: 'Dashboard', href: '/library-management-system/dashboard' },
-        { text: 'Book Inventory', href: '/library-management-system/book-inventory' },
+        { text: 'Book Catalogue', href: '/EduBook.com/book-catalogue' },
+        { text: 'Profile', href: '/EduBook.com/profile' },
+        { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+        { text: 'Book Inventory', href: '/EduBook.com/book-inventory' },
     ];
 
     const userSubMenuLinks = [
-        { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
-        { text: 'History Requests', href: '/library-management-system/history-requests' },
+        { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+        { text: 'History Requests', href: '/EduBook.com/history-requests' },
     ];
 
     const librarianLinks = [
-        { text: 'Manage Accounts', href: '/library-management-system/manage-accounts' },
-        { text: 'Manage Books', href: '/library-management-system/manage-books' },
-        { text: 'Dashboard', href: '/library-management-system/dashboard' },
-        { text: 'Profile', href: '/library-management-system/profile' },
+        { text: 'Manage Accounts', href: '/EduBook.com/manage-accounts' },
+        { text: 'Manage Books', href: '/EduBook.com/manage-books' },
+        { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+        { text: 'Profile', href: '/EduBook.com/profile' },
     ];
 
     const librarianSubMenuLinks = [
-        { text: 'Pending Requests', href: '/pending-requests' },
-        { text: 'History Requests', href: '/history-requests' },
+        { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+        { text: 'History Requests', href: '/EduBook.com/history-requests' },
     ];
 
     let linksToAdd = [];
@@ -225,6 +150,7 @@
         subMenuDiv.appendChild(div);
     });
 });
+document.getElementById("profilePicture").src = localStorage.getItem("profilePicture")
 
 
     document.getElementById("accountId").value = localStorage.getItem("accountId")

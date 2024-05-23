@@ -115,6 +115,9 @@ window.onclick = function(event) {
     }
 }
 
+document.getElementById("profilePicture").src = localStorage.getItem("profilePicture")
+
+
 //ADD THE FORM INTO MONGODB DATABASE
 document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('signUpForm').addEventListener('submit', async function(event) {
@@ -130,6 +133,7 @@ const image = document.getElementById('profile_picture').files[0];
 const verify_password = document.getElementById('verify_password').value;
 const account_type = document.getElementById('account_type').value;
 const address = document.getElementById('address').value;
+const edited_by = localStorage.getItem("accountId")
 //VALIDATE INPUTS
 validateInputs(username, password, last_name, given_name, email_address, contact_number, profile_picture, address, verify_password, account_type);
 
@@ -148,7 +152,7 @@ validateInputs(username, password, last_name, given_name, email_address, contact
     }
 
     //JSON FORM
-    const signup_creds = {account_id, username, password, last_name, given_name, email_address, contact_number, profile_picture, address, account_type };
+    const signup_creds = {account_id, username, password, last_name, given_name, email_address, contact_number, profile_picture, address, account_type, edited_by };
 
     //POST REQUEST ATTEMPT TO /users
     const response = await fetch('/database/accounts', {
@@ -166,6 +170,7 @@ validateInputs(username, password, last_name, given_name, email_address, contact
     const data = await response.json();
     console.log('User successfully registered:', data);
     alert('User account successfully added!');
+    location.window.href= '/Edubook.com/manage-accounts'
     //REDIRECT TO INDEX AFTER FILLING UP THE FORM
     // window.location.href = '/library-management-system'
 });
@@ -206,7 +211,8 @@ document.addEventListener("DOMContentLoaded", function(){
                 field.username,
                 field.email_address,
                 field.contact_number,
-                field.account_type
+                field.account_type,
+                field.edited_by
             );
             console.log('Passed through the createAccountDataTable function')
         });
@@ -216,92 +222,118 @@ document.addEventListener("DOMContentLoaded", function(){
         throw new Error('Error Fetching accounts');
     });
 });
-function createAccountDataTable(accountID, accountUsername, accountEmailAddress, accountContactNumber, accountType){
+async function createAccountDataTable(accountID, accountUsername, accountEmailAddress, accountContactNumber, accountType, librarianEdited){
     const accountCellData = document.getElementById("accountTableData")
     const tableRow = document.createElement("tr");
-
+    const librarianFullName =  await getFullNameByHandleId(librarianEdited)
     tableRow.innerHTML =`
     <td>${accountID}</td>
     <td>${accountUsername}</td>
     <td>${accountEmailAddress}</td>
     <td>${accountContactNumber}</td>
-    <td>${accountType}</td>`;
+    <td>${accountType}</td>
+    <td>${librarianEdited}</td>`;
     
     accountCellData.append(tableRow)
 }
-// SCRIPT FOR SIDEBAR
-function toggleSidebar() {
-    var sidebar = document.getElementById("sidebar");
-    sidebar.classList.toggle('active');
-}
-// SCRIPT FOR THE SUBMENU SIDEBAR
-function toggleSubMenu() {
+    // SCRIPT FOR SIDEBAR
+    function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle('active');
+    }
+    // SCRIPT FOR THE SUBMENU SIDEBAR
+    function toggleSubMenu() {
+        var subMenu = document.getElementById("subMenuDiv");
+        subMenu.classList.toggle('active');
+    }
+    // FUNCTION FOR HIDING THE SUBMENU
+    function hideSubMenu() {
     var subMenu = document.getElementById("subMenuDiv");
-    subMenu.classList.toggle('active');
-}
-// FUNCTION FOR HIDING THE SUBMENU
-function hideSubMenu() {
-var subMenu = document.getElementById("subMenuDiv");
-subMenu.classList.remove('active'); 
-subMenu.classList.add('inactive')
-}
+    subMenu.classList.remove('active'); 
+    subMenu.classList.add('inactive')
+    }
 
-document.addEventListener("DOMContentLoaded", function() {
-const accountPermissions = localStorage.getItem("accountType");
+    const accountPermissions = localStorage.getItem("accountType");
+    const accountID = localStorage.getItem("accountId")
+    const sidebar = document.getElementById('sidebar');
+    const subMenuDiv = document.getElementById('subMenuDiv');
 
-const sidebar = document.getElementById('sidebar');
-const subMenuDiv = document.getElementById('subMenuDiv');
+    document.addEventListener("DOMContentLoaded", function() {
+    
+        const userLinks = [
+            { text: 'Book Catalogue', href: '/EduBook.com/book-catalogue' },
+            { text: 'Profile', href: '/EduBook.com/profile' },
+            { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+            { text: 'Book Inventory', href: '/EduBook.com/book-inventory' },
+        ];
+    
+        const userSubMenuLinks = [
+            { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+            { text: 'History Requests', href: '/EduBook.com/history-requests' },
+        ];
+    
+        const librarianLinks = [
+            { text: 'Manage Accounts', href: '/EduBook.com/manage-accounts' },
+            { text: 'Manage Books', href: '/EduBook.com/manage-books' },
+            { text: 'Dashboard', href: '/EduBook.com/dashboard' },
+            { text: 'Profile', href: '/EduBook.com/profile' },
+        ];
+    
+        const librarianSubMenuLinks = [
+            { text: 'Pending Requests', href: '/EduBook.com/pending-requests' },
+            { text: 'History Requests', href: '/EduBook.com/history-requests' },
+        ];
 
-const userLinks = [
-    { text: 'Book Catalogue', href: '/library-management-system/book-catalogue' },
-    { text: 'Profile', href: '/library-management-system/profile' },
-    { text: 'Dashboard', href: '/library-management-system/dashboard' },
-    { text: 'Book Inventory', href: '/library-management-system/book-inventory' },
-];
+    let linksToAdd = [];
+    let subMenuLinksToAdd = [];
 
-const userSubMenuLinks = [
-    { text: 'Pending Requests', href: '/library-management-system/pending-requests' },
-    { text: 'History Requests', href: '/library-management-system/history-requests' },
-];
+    if (accountPermissions === 'User') {
+        linksToAdd = userLinks;
+        subMenuLinksToAdd = userSubMenuLinks;
+    } else if (accountPermissions === 'Librarian') {
+        linksToAdd = librarianLinks;
+        subMenuLinksToAdd = librarianSubMenuLinks;
+    }
 
-const librarianLinks = [
-    { text: 'Manage Accounts', href: '/library-management-system/manage-accounts' },
-    { text: 'Manage Books', href: '/library-management-system/manage-books' },
-    { text: 'Dashboard', href: '/library-management-system/dashboard' },
-    { text: 'Profile', href: '/library-management-system/profile' },
-];
+    linksToAdd.forEach(link => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.text;
+        div.appendChild(a);
+        sidebar.appendChild(div);
+    });
 
-const librarianSubMenuLinks = [
-    { text: 'Pending Requests', href: '/pending-requests' },
-    { text: 'History Requests', href: '/history-requests' },
-];
-
-let linksToAdd = [];
-let subMenuLinksToAdd = [];
-
-if (accountPermissions === 'User') {
-    linksToAdd = userLinks;
-    subMenuLinksToAdd = userSubMenuLinks;
-} else if (accountPermissions === 'Librarian') {
-    linksToAdd = librarianLinks;
-    subMenuLinksToAdd = librarianSubMenuLinks;
-}
-
-linksToAdd.forEach(link => {
-    const div = document.createElement('div');
-    const a = document.createElement('a');
-    a.href = link.href;
-    a.textContent = link.text;
-    div.appendChild(a);
-    sidebar.appendChild(div);
+    subMenuLinksToAdd.forEach(link => {
+        const div = document.createElement('div');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.text;
+        div.appendChild(a);
+        subMenuDiv.appendChild(div);
+    });
 });
 
-subMenuLinksToAdd.forEach(link => {
-    const div = document.createElement('div');
-    const a = document.createElement('a');
-    a.href = link.href;
-    a.textContent = link.text;
-    div.appendChild(a);
-    subMenuDiv.appendChild(div);
-});
-});
+async function getFullNameByHandleId(handled_by){
+    const response = await fetch(`/database/accounts?account_id=${handled_by}`, {
+        method: 'GET'
+    });
+    if(!response.ok){
+        console.log('Could not establish a connection to the accounts', handled_by);
+        return 'Could not fetch the Full Name';
+    }
+
+    const accountData = await response.json();
+
+    const fullName = accountData.find(accountparam => accountparam.account_id === handled_by);
+    if (fullName){
+        const {
+            last_name,
+            given_name
+        } = fullName;
+        return given_name + " " + last_name;
+    }
+    else{
+        return 'Could not fetch the Full Name';
+    }
+}

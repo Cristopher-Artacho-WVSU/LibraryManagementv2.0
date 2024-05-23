@@ -130,6 +130,55 @@ app.post('/database/books', (req, res) =>{
     })
 })    
 
+// FOR GETTING THE SINGULAR DOCUMENTS
+app.get('/database/books/:id', (req, res) => {
+    if (ObjectId.isValid(req.params.id)){
+        const bookID = new ObjectId(req.params.id)
+
+        database.collection('books')
+        .findOne({ _id: bookID})
+        .then(doc => {
+            if (doc) {
+                res.status(200).json(doc);
+            }
+            else{
+                res.status(404).json({error: 'Request not found'});
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ error: 'Could not connect to the requests collection' });
+        });
+        } else {
+            res.status(500).json({error: "Invalid BookID"})
+}})
+
+app.patch('/database/books/:id', (req, res) => {
+    const bookID = req.params.id;
+
+    if (ObjectId.isValid(bookID)) {
+        const updateFields = req.body; // Assuming req.body contains the fields to update
+
+        database.collection('books')
+            .updateOne(
+                { _id: new ObjectId(bookID) },
+                { $set: updateFields } // Using $set to specify the fields to update
+            )
+            .then(result => {
+                if (result.matchedCount > 0) {
+                    res.status(200).json(result);
+                } else {
+                    res.status(404).json({ error: 'Request not found' });
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ error: 'An error occurred', details: err });
+            });
+    } else {
+        res.status(400).json({ error: 'Invalid Book ID' });
+    }
+});
+
 
 app.get('/database/requests', (req, res) => {
     let requests = [ ]
@@ -285,32 +334,32 @@ app.patch('/database/requests/:id', (req, res) => {
 
 
 
-app.get('/library-management-system/manage-accounts', (req, res) => {
+app.get('/EduBook.com/manage-accounts', (req, res) => {
     res.render('manageAccounts')
 })
-app.get('/library-management-system/login', (req, res) => {
+app.get('/EduBook.com/login', (req, res) => {
     res.render('loginAccount')
 })
-app.get('/library-management-system/dashboard', (req, res) => {
+app.get('/EduBook.com/dashboard', (req, res) => {
     res.render('libraryDashboard')
 })
-app.get('/library-management-system/profile', (req, res) => {
+app.get('/EduBook.com/profile', (req, res) => {
     res.render('libraryProfile')
 })
-app.get('/library-management-system/book-catalogue', (req, res) => {
+app.get('/EduBook.com/book-catalogue', (req, res) => {
     res.render('libraryBookCatalogue')
 })
-app.get('/library-management-system/manage-books', (req, res) => {
+app.get('/EduBook.com/manage-books', (req, res) => {
     res.render('manageBooks')
 })
-app.get('/library-management-system/book-details', (req, res) => {
+app.get('/EduBook.com/book-details', (req, res) => {
     res.render('libraryBookInfo')
 })
 
-app.get('/library-management-system/pending-requests', (req, res) => {
+app.get('/EduBook.com/pending-requests', (req, res) => {
     res.render('libraryPendingRequests')
 })
-app.get('/library-management-system/history-requests', (req, res) => {
+app.get('/EduBook.com/history-requests', (req, res) => {
     res.render('libraryHistoryRequests')
 })
 
