@@ -52,6 +52,14 @@ body {
     border-radius: 10px;
     background-color: rgb(233, 233, 233);
 }
+#logInForm input:hover{
+    border: none;
+    background-color: blanchedalmond;
+    color: brown;  
+    box-shadow: -3px 18px 20px 0px rgba(99,89,99,1);  
+    transition: all .3s ease-in-out;
+}
+
 #logInDiv label{
     font-size: 18px;
     font-weight: bold;
@@ -68,6 +76,12 @@ body {
     font-weight: bolder;
     color: rgb(31, 31, 31);
 }
+#logInDiv button:hover{
+    background-color: blanchedalmond;
+    box-shadow: -3px 18px 20px 0px rgba(99,89,99,1);  
+    transition: all .3s ease-in-out;
+}
+
 #logInForm button a{
     text-decoration: none;
     color: rgb(31, 31, 31);

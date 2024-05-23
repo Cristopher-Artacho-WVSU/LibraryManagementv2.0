@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Information</title>
 
+    <link rel="stylesheet" href="/bookinfo.css">
+    
     <!-- INCLUDES THE BOOTSTRAP CSS TO MAKE SURE THAT IT HIGHLIGHTS THE DAYS IN THE CURRENT MONTH -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
@@ -24,178 +26,11 @@
         .datepicker-container {
             z-index: 1050 !important;
         }
-    #bookBorrowDiv, #bookReserveDiv{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-40%, -40%);
-    padding: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 550px;
-    z-index: 2; /* Update the z-index to a higher value */
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    opacity: 0;
-    transform: translate(-40%, -40%);
-    }
-    #bookBorrowDiv input, #bookReserveDiv input{
-        margin-bottom: 10px;
-        height: 30px;
-        width: 100%;
-        font-family:Arial, Helvetica, sans-serif;
-        cursor: pointer;
-    }
-    #bookBorrowDiv label, #bookReserveDiv label{
-        font-size: 15px;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-        font-weight: bold;
-    }
-    #bookBorrowDiv button, #bookReserveDiv button{
-        width: 130px;
-        height: 40px;
-        background-color: rgb(147, 147, 147);
-        color: white;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-        border: none;
-        border-radius: 5px;
-    }
-    #bookBorrowDiv.showContent{
-        opacity: 1;
-        transform: translate(-50%, -50%);    
-    }
-    #borrowFormTag{
-        text-align: center;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-
-    #bookReserveDiv.showContent{
-        opacity: 1;
-        transform: translate(-50%, -50%);    
-    }
-    #reserveFormTag{
-        text-align: center;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    #blurBackground{
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(5px);
-        z-index: 1;
-        transition: opacity 0.3s ease;
-        opacity: 0;
-    }
-    #blurBackground.showContent{
-        opacity: 1;
-    }
-    .hideContent{
-        display: none;
-    }
-
-    .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0px;
-            left: -250px;
-            padding-top: 35px;
-            background-color: #bebdbd;
-            transition: left 0.3s ease;
-            z-index: 3;
-        }
-
-        .sidebar.active {
-            left: 0;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar ul li {
-            padding: 20px;
-            margin-left: 10px;
-            font-size: 18px;
-            color: white;
-            font-family: Arial, Helvetica, sans-serif;
-            cursor: pointer;
-        }
-
-        .sidebar ul li:hover {
-            background-color: #797979;
-            transition: 1s;
-        }
-
-        .menu-toggle {
-            position: fixed;
-            left: 15px;
-            top: 15px;
-            cursor: pointer;
-            z-index: 3;
-        }
-
-        .menu-toggle i {
-            font-size: 24px;
-            color: #fff;
-        }
-
-        .sub-menu {
-            display: none;
-        }
-
-        .sub-menu.active {
-            display: block;
-        }
-
-        .sub-menu a {
-            display: block;
-            padding: 10px;
-            padding-right: 15px;
-            margin-top: 10px;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        /* Additional Styles */
-        .sidebar-content {
-            padding: 20px;
-            margin-left: 10px;
-            font-size: 18px;
-            color: white;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .sidebar-content:hover {
-            background-color: #797979;
-            transition: 1s;
-        }
-        
-        /* Remove bullet points and link highlights */
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
-            outline: none; /* Remove link outline */
-        }
-
-        .sidebar ul li a:hover {
-            color:#a09e9e;
-            transition: 1s;
-        }
 
     </style>
 </head>
 <body>
-
+    <img class="background">
         <!-- THE DIV ITSELF FOR THE SIDEBAR -->
     <div class="sidebar" id="sidebar">
             
@@ -211,17 +46,20 @@
     <!-- FOR BOOK INFORMATION. BUTTONS: RESERVE AND BORROW -->
 
     <!-- THE FIELDS FOR THE BOOK -->
-    <p id="bookId"></p>
-    <p id="date"></p>
-    <p id="author"></p>
-    <p id="genre"></p>
-    <p id="title"></p>
-    <p id="copies"></p>
-    <img id="picture">
+    <div class="book_details">
+        <a href="/library-management-system/book-catalogue"> Back to Catalogue</a>
+        <p id="bookId"></p>
+        <p id="date"></p>
+        <p id="author"></p>
+        <p id="genre"></p>
+        <p id="title"></p>
+        <p id="copies"></p>
+        <img id="picture">
+        <!-- THE BUTTONS FOR BORROW AND RESERVE -->
+        <button id="showBorrowBookFormButton">Borrow Book</button>
+        <button id="showReserveBookFormButton">Reserve Book</button>
+    </div>
     
-    <!-- THE BUTTONS FOR BORROW AND RESERVE -->
-    <button id="showBorrowBookFormButton">Borrow Book</button>
-    <button id="showReserveBookFormButton">Reserve Book</button>
     
     <div id="blurBackground" class="hideContent"></div>
 
