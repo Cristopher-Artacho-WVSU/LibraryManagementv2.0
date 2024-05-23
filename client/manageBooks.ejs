@@ -7,125 +7,24 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/librarianbookmanagement_style.css">
+    
+    <link rel="stylesheet" href="/signup_style.css">
+    <link rel="stylesheet" href="/manage_style.css">
     <style>
-            .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0px;
-            left: -250px;
-            padding-top: 35px;
-            background-color: #bebdbd;
-            transition: left 0.3s ease;
-            z-index: 3;
-        }
 
-        .sidebar.active {
-            left: 0;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar ul li {
-            padding: 20px;
-            margin-left: 10px;
-            font-size: 18px;
-            color: white;
-            font-family: Arial, Helvetica, sans-serif;
-            cursor: pointer;
-        }
-
-        .sidebar ul li:hover {
-            background-color: #797979;
-            transition: 1s;
-        }
-
-        .menu-toggle {
-            position: fixed;
-            left: 15px;
-            top: 15px;
-            cursor: pointer;
-            z-index: 3;
-        }
-
-        .menu-toggle i {
-            font-size: 24px;
-            color: #fff;
-        }
-
-        .sub-menu {
-            display: none;
-        }
-
-        .sub-menu.active {
-            display: block;
-        }
-
-        .sub-menu a {
-            display: block;
-            padding: 10px;
-            padding-right: 15px;
-            margin-top: 10px;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        /* Additional Styles */
-        .sidebar-content {
-            padding: 20px;
-            margin-left: 10px;
-            font-size: 18px;
-            color: white;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .sidebar-content:hover {
-            background-color: #797979;
-            transition: 1s;
-        }
-        
-        /* Remove bullet points and link highlights */
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
-            outline: none; /* Remove link outline */
-        }
-
-        .sidebar ul li a:hover {
-            color:#a09e9e;
-            transition: 1s;
-        }
     </style>
 </head>
 <body>
+    <img class="background">
+    <!-- NAV BAR -->
+    <div class="navbar">
+        <h1>Manage Books</h1>
+        <div class="logout">
+            <a href='/library-management-system/login'>Log out</a>
+        </div>
+    </div>
     <div id="blurBackground" class="hideContent"></div>
-    <!-- <div class="sidebar" id="sidebar">
-        <ul>
-          <li><a href="/librarians/dashboard">Dashboard</a></li>
-          <li><a href="#">Profile</a></li>
-          <li onmouseenter="toggleSubMenu()" onmouseleave="hideSubMenu()">
-            <a>Books</a>
-            <div class="sub-menu" id="librarianSubMenu">
-                <a href="/login/librarian/dashboard/add_book">Add Books</a>
-                <a href="">Edit Books</a>
-                <a href="">Delete Books</a>
-            </div>
-          </li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact Us</a></li>
-        </ul>
-      </div> -->
-<!--     
-      <div class="menu-toggle" onclick="toggleSidebar()">
-        <i class="fas fa-bars thin-menu-icon"></i>
-      </div> -->
+
 <!-- THE DIV ITSELF FOR THE SIDEBAR -->
 <div class="sidebar" id="sidebar">
         
@@ -138,18 +37,11 @@
 <div class="menu-toggle" onclick="toggleSidebar()">
     <i class="fas fa-bars thin-menu-icon"></i>
 </div>
-
-
-    <div id="navbar">
-        <!-- <p>Add Books</p> 
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p id="username"></p>&nbsp;&nbsp;
-        <img id="profile_picture">&nbsp;&nbsp;&nbsp;&nbsp;
-         <p><a href="">Log Out</a></p> -->
+    <div class="managebtn">
+        <button id="addBookButton">Add Book</button>
     </div>
-    
-    <button id="addBookButton">Add Book</button>
-<div id="addBookDiv" class="hideContent">
+
+    <div id="addBookDiv" class="hideContent">
     <h1 id="AddBookTag">Add Book</h1>
     <form id="addBookForm">
 
@@ -180,7 +72,7 @@
     </form>
 </div>
 
-<table>
+<table class="manage_table">
     <thead>
         <th>Book ID</th>
         <th>Book Title</th>

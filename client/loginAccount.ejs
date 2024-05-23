@@ -4,23 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <!-- THE CSS FILE -->
-    <!-- <link rel="stylesheet" href="/login_style.css"> -->
+    <link rel="stylesheet" href="/login_style.css">
 </head>
+
 <body>
-    <!-- DIVISION INTENDED FOR THE FORM -->
-    <div id="logInDiv">
-        <!-- LOGIN FORM TAG -->
-        <h1 id="logInFormTag">Log In</h1>
-        <!-- LOG IN FORM -->
-        <form id="logInForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Username" required> <br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Password" required><br>
-            <button type="submit">Log In</button>
-        </form>
+    <img class="background">
+    
+    <h1 id="logInFormTag">Log In</h1>
+        <div id="logInDiv">
+            <form id="logInForm">
+                <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" placeholder="Username"> <br>
+                <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" placeholder="Password"><br>
+                <button type="submit">Log In</button>
+            </form>
+        <p id="forgot-details">Forgot your Login details? <a href="">Get Help Signing in</a></p>
     </div>
+
+    
 
     <script>
     document.getElementById('logInForm').addEventListener('submit', async function(event) {

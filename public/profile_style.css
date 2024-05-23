@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto; /* Corrected 'auto' spelling */
+    grid-template-rows: 100px 50px 200px 100px 125px;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+/*USER PROFILE*/
+.profile_details{
+    grid-column: 3;
+    grid-row: 3/ span 5;
+    background-color: antiquewhite;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 3px 50px rgb(0 0 0 / 0.2);
+    width: auto;
+    
+    
+}
+
+.profile_details label{
+    padding: 15px;
+    margin: 1px;
+    display: inline-flex;
+    justify-content: space-evenly;
+    text-align: end;
+}
+.profile_details input{
+    width: 60%;
+    display: inline-block;
+    padding: 8px;
+    margin-left: 10px;
+    border-radius: 10px;
+    border: none;    
+    box-shadow: 0 3px 20px rgb(0 0 0 / 0.2);
+    
+}
