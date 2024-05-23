@@ -42,6 +42,9 @@ body {
   color: black;
   text-decoration: none;
 }
+.logout a:hover{
+  color: rgb(223,55,7);
+}
 
 /* SIDEBAR */
 .sidebar {
@@ -50,8 +53,9 @@ body {
     position: fixed;
     top: 0px;
     left: -250px;
-    padding-top: 100px;
-    background-color: beige;
+    padding-top: 80px;
+    background-color: blanchedalmond;
+    box-shadow: 0px 0px 20px rgb(0, 0, 0, 0.5);  
     transition: left 0.3s ease;
     z-index: 3;
   }
@@ -64,11 +68,10 @@ body {
     background-color: white;
     margin: 0px;
     border-radius: 10px 0px 0px 10px;
-  }
-  
+  }  
   .sidebar a:hover{
     background-color: blanchedalmond;
-    box-shadow: 0 3px 30px rgb(0 0 0 / 0.2);
+    box-shadow: 0 3px 30px rgb(5,15,45, 0.8);
     transition: all .3s ease-in-out;
   }
   
